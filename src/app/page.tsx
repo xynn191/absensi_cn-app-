@@ -143,12 +143,12 @@ const majorIcons = {
 } as const;
 
 const majorImages = {
-  PPLG: "/images/logos/pplg.jpeg",
-  DKV: "/images/logos/dkv.jpeg",
-  TJKT: "/images/logos/tjkt.jpeg",
-  Pemasaran: "/images/logos/pm.jpeg",
-  MPLB: "/images/logos/mplb.jpeg",
-  Perhotelan: "/images/logos/ph.jpeg",
+  PPLG: "/images/raw/pplg.jpeg",
+  DKV: "/images/raw/dkv.jpeg",
+  TJKT: "/images/raw/tjkt.jpeg",
+  Pemasaran: "/images/raw/pm.jpeg",
+  MPLB: "/images/raw/mplb.jpeg",
+  Perhotelan: "/images/raw/ph.jpeg",
 } as const;
 
 const majorImagePositions = {
