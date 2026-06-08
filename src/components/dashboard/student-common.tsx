@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { siteConfig } from "@/lib/config/site";
+import { resolveApiAssetUrl } from "@/lib/config/site";
 import { formatDisplayLabel } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { id as localeID } from "date-fns/locale";
@@ -43,14 +43,7 @@ export function formatClock(value?: string) {
 }
 
 export function studentAttachmentUrl(value?: string) {
-  if (!value) return "";
-  if (value.startsWith("http://") || value.startsWith("https://")) return value;
-  try {
-    const origin = new URL(siteConfig.apiBaseUrl).origin;
-    return `${origin}${value.startsWith("/") ? value : `/${value}`}`;
-  } catch {
-    return value;
-  }
+  return resolveApiAssetUrl(value);
 }
 
 export function StudentStatusPill({ status }: { status: string }) {

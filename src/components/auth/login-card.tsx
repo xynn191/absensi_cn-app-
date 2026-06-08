@@ -96,13 +96,13 @@ export function LoginCard() {
         glowY.set(50);
       }}
     >
-      <div className="absolute inset-0 rounded-[2.2rem] bg-[linear-gradient(135deg,rgba(62,184,129,0.14),rgba(255,255,255,0.16),rgba(162,215,140,0.08))] blur-xl" />
+      <div className="absolute inset-0 rounded-[2.2rem] bg-[linear-gradient(135deg,rgba(62,184,129,0.14),rgba(255,255,255,0.16),rgba(162,215,140,0.08))] blur-lg" />
       <motion.div
         style={{
           transform: !supportsInteractiveTilt || prefersReducedMotion ? "none" : cardTransform,
           willChange: supportsInteractiveTilt && !prefersReducedMotion ? "transform" : "auto",
         }}
-        className="relative transform-gpu backface-hidden overflow-hidden rounded-[2.2rem] border border-white/60 bg-white/56 p-5 shadow-[0_28px_90px_rgba(22,85,58,0.14)] backdrop-blur-xl sm:p-7 lg:p-8"
+        className="relative transform-gpu backface-hidden overflow-hidden rounded-[2.2rem] border border-white/60 bg-white/62 p-5 shadow-[0_28px_90px_rgba(22,85,58,0.14)] backdrop-blur-md sm:p-7 lg:p-8"
       >
         <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(255,255,255,0))]" />
         <motion.div
@@ -141,7 +141,7 @@ export function LoginCard() {
                     transition={supportsInteractiveTilt ? { type: "spring", stiffness: 240, damping: 18 } : undefined}
                     className="relative shrink-0"
                   >
-                    <div className="absolute inset-0 rounded-full bg-emerald-200/30 blur-lg" />
+                    <div className="absolute inset-0 rounded-full bg-emerald-200/30 blur-md" />
                     <motion.div
                       animate={prefersReducedMotion ? undefined : { y: [0, -3, 0] }}
                       transition={
@@ -157,9 +157,10 @@ export function LoginCard() {
                       className="relative h-22 w-22"
                     >
                       <Image
-                        src="/images/logos/logo_cn_downscale.png"
+                        src="/images/optimized/logo-cn.png"
                         alt="Logo SMK Citra Negara"
                         fill
+                        sizes="88px"
                         className="object-contain drop-shadow-[0_10px_22px_rgba(22,85,58,0.14)]"
                         priority
                       />
@@ -183,8 +184,8 @@ export function LoginCard() {
                 className="hidden md:block"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 rounded-[1.6rem] bg-emerald-200/45 blur-lg" />
-                  <div className="relative rounded-[1.45rem] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.62))] p-3.5 shadow-[0_16px_38px_rgba(16,24,40,0.1),inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-2xl">
+                  <div className="absolute inset-0 rounded-[1.6rem] bg-emerald-200/45 blur-md" />
+                  <div className="relative rounded-[1.45rem] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.62))] p-3.5 shadow-[0_16px_38px_rgba(16,24,40,0.1),inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-md">
                     <ShieldCheck className="size-[1.05rem] text-emerald-700" />
                   </div>
                 </div>
@@ -203,7 +204,7 @@ export function LoginCard() {
             <PortalToggle value={portal} onChange={setPortal} />
           </div>
 
-          <div className="rounded-[1.7rem] border border-white/60 bg-white/32 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-xl sm:p-5">
+          <div className="rounded-[1.7rem] border border-white/60 bg-white/42 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-md sm:p-5">
             <LoginForm key={portal} portal={portal} />
           </div>
 

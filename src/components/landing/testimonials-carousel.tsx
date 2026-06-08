@@ -49,9 +49,8 @@ export function TestimonialsCarousel({
           <h3 className={`${styles.landingInkText} max-w-[420px] text-[2.1rem] font-bold leading-[1.08] tracking-[-0.04em] md:text-[3.05rem]`}>
             Yang Dikatakan
             <br />
-            <span className={`${styles.landingAccentText} relative inline-block pr-1`}>
+            <span className={`${styles.landingAccentText} inline-block pr-1`}>
               Murid
-              <span className="absolute inset-x-0 bottom-[0.08em] h-[4px] rounded-full bg-emerald-400/95" />
             </span>
             <br />
             Tentang Aplikasi Ini

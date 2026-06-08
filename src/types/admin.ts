@@ -139,6 +139,13 @@ export type AdminSchoolYear = {
   is_active: boolean;
 };
 
+export type AdminMajor = {
+  id: string;
+  code: string;
+  name: string;
+  is_active: boolean;
+};
+
 export type AdminClass = {
   id: string;
   grade: string;
@@ -149,6 +156,20 @@ export type AdminClass = {
   school_year_id: string;
   school_year_name: string;
   display_name: string;
+  student_count: number;
+  subject_assignment_count: number;
+  homeroom_assignment_id?: string;
+  homeroom_teacher_id?: string;
+  homeroom_teacher_name?: string;
+  attendance_record_count: number;
+  is_active: boolean;
+};
+
+export type AdminClassPayload = {
+  grade: string;
+  name: string;
+  major_id: string;
+  school_year_id: string;
   is_active: boolean;
 };
 

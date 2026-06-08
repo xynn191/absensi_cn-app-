@@ -3,6 +3,60 @@
   color: var(--landing-ink);
 }
 
+.landingHeroImage {
+  animation: landingImageWake 1200ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  transform-origin: center;
+}
+
+.landingOverlayReveal {
+  animation: landingOverlayWake 920ms ease-out both;
+}
+
+.landingAmbientOne {
+  animation: landingAmbientDrift 9s ease-in-out 850ms infinite;
+}
+
+.landingAmbientTwo {
+  animation: landingAmbientDrift 10s ease-in-out 1150ms infinite reverse;
+}
+
+.landingReveal,
+.landingRevealLeft,
+.landingRevealRight {
+  animation: landingRevealUp 760ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  will-change: transform, opacity;
+}
+
+.landingRevealLeft {
+  animation-name: landingRevealLeft;
+  animation-delay: 620ms;
+}
+
+.landingRevealRight {
+  animation-name: landingRevealRight;
+  animation-delay: 720ms;
+}
+
+.landingDelayOne {
+  animation-delay: 120ms;
+}
+
+.landingDelayTwo {
+  animation-delay: 240ms;
+}
+
+.landingDelayThree {
+  animation-delay: 390ms;
+}
+
+.landingDelayFour {
+  animation-delay: 540ms;
+}
+
+.landingFloatReveal {
+  animation: landingFloatCardIn 820ms cubic-bezier(0.19, 1, 0.22, 1) 1150ms both;
+}
+
 .landingPageShell {
   padding-inline: var(--landing-space-section-x);
 }
@@ -175,6 +229,14 @@
   background: var(--landing-footer-bg);
 }
 
+@media (max-width: 640px) {
+  .landingFooterShell {
+    background:
+      radial-gradient(circle at 50% -8%, rgba(110, 231, 183, 0.12), transparent 32%),
+      linear-gradient(180deg, #102620 0%, #0d221d 42%, #0a1c18 100%);
+  }
+}
+
 .landingFooterGlass {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.04);
@@ -205,4 +267,101 @@
 .landingFooterContact:hover {
   border-color: rgba(110, 231, 183, 0.4);
   background: rgba(52, 211, 153, 0.1);
+}
+
+@keyframes landingImageWake {
+  from {
+    filter: saturate(0.72) brightness(0.82);
+    transform: scale(1.075);
+  }
+
+  to {
+    filter: saturate(1) brightness(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes landingOverlayWake {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes landingRevealUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes landingRevealLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-34px, 22px, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes landingRevealRight {
+  from {
+    opacity: 0;
+    transform: translate3d(34px, 22px, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes landingFloatCardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(18px, 22px, 0) rotate(1deg) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+  }
+}
+
+@keyframes landingAmbientDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(10px, -12px, 0) rotate(4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landingHeroImage,
+  .landingOverlayReveal,
+  .landingAmbientOne,
+  .landingAmbientTwo,
+  .landingReveal,
+  .landingRevealLeft,
+  .landingRevealRight,
+  .landingFloatReveal {
+    animation: none;
+    filter: none;
+    opacity: 1;
+    transform: none;
+  }
 }

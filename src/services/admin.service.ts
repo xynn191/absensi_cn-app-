@@ -1,11 +1,13 @@
 import { apiClient } from "@/services/api/client";
 import type {
   AdminClass,
+  AdminClassPayload,
   AdminAttendanceRule,
   AdminAttendanceRulePayload,
   AdminDashboardData,
   AdminHomeroomAssignment,
   AdminHomeroomAssignmentPayload,
+  AdminMajor,
   AdminSchoolYear,
   AdminStudent,
   AdminStudentClassMembership,
@@ -113,10 +115,56 @@ export async function getAdminSubjects() {
   }
 }
 
+export async function getAdminMajors() {
+  try {
+    const response = await apiClient.get<ApiEnvelope<AdminMajor[]>>(
+      "/admin/majors",
+    );
+    return response.data.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+}
+
 export async function getAdminClasses() {
   try {
     const response = await apiClient.get<ApiEnvelope<AdminClass[]>>(
       "/admin/classes",
+    );
+    return response.data.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+}
+
+export async function createAdminClass(payload: AdminClassPayload) {
+  try {
+    const response = await apiClient.post<ApiEnvelope<AdminClass>>(
+      "/admin/classes",
+      payload,
+    );
+    return response.data.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+}
+
+export async function updateAdminClass(id: string, payload: AdminClassPayload) {
+  try {
+    const response = await apiClient.patch<ApiEnvelope<AdminClass>>(
+      `/admin/classes/${id}`,
+      payload,
+    );
+    return response.data.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+}
+
+export async function deleteAdminClass(id: string) {
+  try {
+    const response = await apiClient.delete<ApiEnvelope<null>>(
+      `/admin/classes/${id}`,
     );
     return response.data.data;
   } catch (error) {

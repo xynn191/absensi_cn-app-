@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/premium-modal";
 import { RadixSelectField } from "@/components/ui/radix-select";
 import { Textarea } from "@/components/ui/textarea";
+import { resolveApiAssetUrl } from "@/lib/config/site";
 import { type FieldErrors, hasFieldErrors, validateRequired } from "@/lib/form-validation";
 import {
   getTeacherHomeroomSubmissionsOverview,
@@ -844,17 +845,7 @@ function isImageAttachment(attachment: string) {
 }
 
 function normalizeSubmissionAttachment(attachment: string) {
-  if (attachment.startsWith("http://") || attachment.startsWith("https://")) {
-    return attachment;
-  }
-
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080/api/v1";
-  try {
-    const origin = new URL(baseUrl).origin;
-    return `${origin}${attachment.startsWith("/") ? attachment : `/${attachment}`}`;
-  } catch {
-    return attachment;
-  }
+  return resolveApiAssetUrl(attachment);
 }
 
 function openSubmissionAttachment(attachment?: string) {

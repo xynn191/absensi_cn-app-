@@ -53,7 +53,7 @@ function Calendar({
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
         nav: cn(
-          "pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+          "pointer-events-none absolute inset-x-0 top-0 z-30 flex w-full items-center justify-between gap-1",
           defaultClassNames.nav
         ),
         button_previous: cn(
@@ -67,11 +67,11 @@ function Calendar({
           defaultClassNames.button_next
         ),
         month_caption: cn(
-          "relative z-10 flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
+          "pointer-events-none relative z-20 flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
           defaultClassNames.month_caption
         ),
         dropdowns: cn(
-          "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
+          "pointer-events-auto flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
@@ -83,7 +83,7 @@ function Calendar({
           defaultClassNames.dropdown
         ),
         caption_label: cn(
-          "font-semibold tracking-[-0.01em] text-slate-900 select-none",
+          "pointer-events-auto font-semibold tracking-[-0.01em] text-slate-900 select-none",
           captionLayout === "label"
             ? "text-sm"
             : "flex items-center gap-1 rounded-(--cell-radius) text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
@@ -218,7 +218,7 @@ function CalendarDropdown({
         <Select.Content
           position="popper"
           sideOffset={8}
-          className="z-[90] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-2xl border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(242,252,247,0.99)_100%)] p-1.5 shadow-[0_24px_70px_rgba(15,23,42,0.18)] backdrop-blur-xl"
+          className="z-[9999] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-2xl border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(242,252,247,0.99)_100%)] p-1.5 shadow-[0_24px_70px_rgba(15,23,42,0.18)] backdrop-blur-xl"
         >
           <Select.Viewport className="max-h-[260px] space-y-1">
             {options?.map((option) => (

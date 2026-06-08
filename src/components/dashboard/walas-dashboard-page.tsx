@@ -128,7 +128,6 @@ export function WalasDashboardPage() {
               percentage={attendancePercentage}
               title="Kehadiran Kelas Hari Ini"
               subtitle={`Snapshot absensi ${dashboard.homeroom.class_name || "kelas walas"} hari ini`}
-              emptyTitle="Belum ada data absensi kelas"
               badgeText="Hari ini"
             />
           </section>

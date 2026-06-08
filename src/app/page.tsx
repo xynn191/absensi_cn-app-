@@ -22,14 +22,75 @@ import {
   FaWifi,
 } from "react-icons/fa";
 import { TestimonialsCarousel } from "@/components/landing/testimonials-carousel";
+import { siteConfig } from "@/lib/config/site";
 import styles from "./page.module.css";
 
+type AttendanceWindow = {
+  check_in_start: string;
+  on_time_until: string;
+  late_until: string;
+};
+
+type ApiEnvelope<T> = {
+  success: boolean;
+  data?: T;
+};
+
+const defaultAttendanceWindow: AttendanceWindow = {
+  check_in_start: "06:30:00",
+  on_time_until: "07:00:00",
+  late_until: "07:30:00",
+};
+
+async function getLandingAttendanceWindow(): Promise<AttendanceWindow> {
+  try {
+    const response = await fetch(`${siteConfig.apiBaseUrl}/public/attendance-window`, {
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      return defaultAttendanceWindow;
+    }
+
+    const payload = (await response.json()) as ApiEnvelope<AttendanceWindow>;
+    return payload.success && payload.data ? payload.data : defaultAttendanceWindow;
+  } catch {
+    return defaultAttendanceWindow;
+  }
+}
+
+function formatLandingClock(value: string) {
+  const [hour = "00", minute = "00"] = value.split(":");
+  return `${hour.padStart(2, "0")}.${minute.padStart(2, "0")}`;
+}
+
+function formatLandingClockRange(start: string, end: string) {
+  return `${formatLandingClock(start)}-${formatLandingClock(end)}`;
+}
+
+function buildHeroMetrics(attendanceWindow: AttendanceWindow) {
+  return [
+    {
+      label: "Jendela Absensi",
+      value: formatLandingClockRange(attendanceWindow.check_in_start, attendanceWindow.on_time_until),
+      detail: "Tepat waktu",
+    },
+    {
+      label: "Terlambat",
+      value: formatLandingClockRange(attendanceWindow.on_time_until, attendanceWindow.late_until),
+      detail: "Masuk review",
+    },
+    { label: "Sistem Waktu Nyata", value: "Real-time", detail: "Terpantau langsung " },
+  ];
+}
+
 const highlightChips = [
-  "Sistem Digital Canggih",
-  "Komunikatif",
-  "Terintegrasi",
-  "Absensi Real Time",
-  "Aktif dan Cerdas",
+  "Absensi Foto",
+  "Validasi Walas",
+  "Pantauan BK",
+  "Dashboard Admin",
+  "Riwayat Live",
+  "Data Terpadu",
 ];
 
 const excellencePoints = [
@@ -81,10 +142,28 @@ const majorIcons = {
   Perhotelan: FaConciergeBell,
 } as const;
 
+const majorImages = {
+  PPLG: "/images/logos/pplg.jpeg",
+  DKV: "/images/logos/dkv.jpeg",
+  TJKT: "/images/logos/tjkt.jpeg",
+  Pemasaran: "/images/logos/pm.jpeg",
+  MPLB: "/images/logos/mplb.jpeg",
+  Perhotelan: "/images/logos/ph.jpeg",
+} as const;
+
+const majorImagePositions = {
+  PPLG: "object-[50%_center]",
+  DKV: "object-[54%_center]",
+  TJKT: "object-[57%_center]",
+  Pemasaran: "object-[50%_center]",
+  MPLB: "object-[58%_center]",
+  Perhotelan: "object-[50%_center]",
+} as const;
+
 const contactLinks = [
-  { icon: FaGlobe, label: "Website" },
-  { icon: FaInstagram, label: "Instagram" },
-  { icon: FaWhatsapp, label: "WhatsApp" },
+  { icon: FaGlobe, label: "Website", href: "https://smk.citranegara.sch.id/" },
+  { icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/smkcitranegaradepok/" },
+  { icon: FaWhatsapp, label: "WhatsApp", href: "https://wa.me/622177201052" },
 ] as const;
 
 const testimonials = [
@@ -150,40 +229,72 @@ const testimonials = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const attendanceWindow = await getLandingAttendanceWindow();
+  const heroMetrics = buildHeroMetrics(attendanceWindow);
+
   return (
     <main className={`${styles.landingPage} min-h-screen`}>
       <section className="w-full">
         <div className="space-y-7 pb-14 md:pb-20">
           <div className={`${styles.landingHeroShell} relative overflow-hidden`}>
-            <div className="relative h-[350px] overflow-hidden md:h-[520px] xl:h-[600px]">
+            <div className="relative min-h-[620px] overflow-hidden md:min-h-[660px] xl:min-h-[720px]">
               <Image
-                src="/images/logos/cn_looks.jpg"
+                src="/images/optimized/cn-hero.jpg"
                 alt="Gedung SMK Citra Negara"
                 fill
                 priority
-                className="object-cover"
+                sizes="100vw"
+                className={`${styles.landingHeroImage} object-cover`}
               />
-              <div className={`${styles.landingHeroOverlay} absolute inset-0`} />
+              <div className={`${styles.landingHeroOverlay} ${styles.landingOverlayReveal} absolute inset-0`} />
+              <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-emerald-950/70 via-emerald-950/18 to-transparent" />
+              <div className={`${styles.landingAmbientOne} absolute left-[7%] top-[10%] hidden h-36 w-36 rounded-full border border-white/15 bg-white/8 blur-[1px] md:block`} />
+              <div className={`${styles.landingAmbientTwo} absolute right-[8%] top-[14%] hidden h-24 w-24 rounded-[2rem] border border-emerald-200/20 bg-emerald-300/10 backdrop-blur-sm lg:block`} />
 
-              <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
-                <div className="max-w-[760px] space-y-2.5 md:space-y-3.5">
-                  <p className="font-heading text-[2rem] leading-[1.05] font-semibold italic text-white md:text-[3rem]">
-                    Aplikasi Absensi Siswa
-                  </p>
-                  <h1 className={`${styles.landingHeroTitle} font-heading text-[2.4rem] leading-[0.98] font-bold tracking-tight md:text-[4.25rem]`}>
-                    SMK Citra Negara
-                  </h1>
-                  <p className="text-base leading-[1.15] font-semibold text-white md:text-[1.65rem]">
-                    Pilihan Yang Tepat Di Sekolah Yang M.A.N.T.A.P
-                  </p>
-                  <div className="pt-1.5">
+              <div className="relative z-10 mx-auto flex min-h-[620px] w-full max-w-[1480px] items-center px-6 py-16 md:min-h-[660px] md:px-10 xl:min-h-[720px] xl:px-14">
+                <div className="mx-auto max-w-[960px] space-y-6 text-center">
+                  <div className={`${styles.landingReveal} inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-100 shadow-[0_16px_40px_rgba(0,0,0,0.18)] backdrop-blur-xl`}>
+                    <FaCameraRetro className="size-3.5 text-emerald-300" />
+                    Portal Absensi Real Time
+                  </div>
+
+                  <div className="space-y-4">
+                    <p className={`${styles.landingReveal} ${styles.landingDelayOne} font-heading text-[1.25rem] font-semibold italic text-white/88 md:text-[1.6rem]`}>
+                      SMK Citra Negara Attendance System
+                    </p>
+                    <h1 className={`${styles.landingReveal} ${styles.landingDelayTwo} font-heading text-[2.8rem] font-bold leading-[0.96] tracking-[-0.07em] text-white drop-shadow-[0_14px_30px_rgba(0,0,0,0.28)] md:text-[4.7rem] xl:text-[5.6rem]`}>
+                      Absen pagi cukup foto.
+                      <span className={`${styles.landingHeroTitle} block`}>Data langsung tervalidasi.</span>
+                    </h1>
+                    <p className={`${styles.landingReveal} ${styles.landingDelayThree} mx-auto max-w-[760px] text-base font-medium leading-8 text-white/82 md:text-[1.18rem]`}>
+                      Siswa melakukan absensi dengan kamera, wali kelas meninjau kehadiran,
+                      BK memantau prioritas, dan admin membaca semua data dari satu sistem.
+                    </p>
+                  </div>
+
+                  <div className={`${styles.landingReveal} ${styles.landingDelayFour} flex justify-center`}>
                     <Link
                       href="/login"
-                      className={`${styles.landingCtaButton} inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-emerald-50`}
+                      className={`${styles.landingCtaButton} group inline-flex h-14 items-center justify-center gap-3 rounded-full px-6 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-emerald-50`}
                     >
-                      Klik Untuk Memulai
+                      Login dan Mulai Absensi
+                      <FaArrowRight className="size-3.5 transition group-hover:translate-x-1" />
                     </Link>
+                  </div>
+
+                  <div className="mx-auto grid max-w-[820px] gap-3 pt-2 sm:grid-cols-3">
+                    {heroMetrics.map((metric, index) => (
+                      <div
+                        key={metric.label}
+                        className={`${styles.landingReveal} rounded-[1.15rem] border border-white/14 bg-white/10 p-3.5 shadow-[0_16px_38px_rgba(0,0,0,0.12)] backdrop-blur-xl`}
+                        style={{ animationDelay: `${760 + index * 95}ms` }}
+                      >
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-100/82">{metric.label}</p>
+                        <p className="mt-2 text-lg font-bold tracking-[-0.03em] text-white">{metric.value}</p>
+                        <p className="mt-1 text-xs font-medium text-white/62">{metric.detail}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -192,11 +303,12 @@ export default function HomePage() {
 
           <div className={`${styles.landingPageShell} mx-auto w-full max-w-[1480px] md:px-6 xl:px-10`}>
             <div className="px-5 py-7 md:px-8 md:py-9 xl:px-10">
-              <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-5">
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
                 {highlightChips.map((chip, index) => (
                   <div
                     key={chip}
-                    className={`${styles.landingChip} flex items-center gap-2 px-4 py-3 text-sm font-medium`}
+                    className={`${styles.landingChip} ${styles.landingReveal} flex items-center gap-2 px-4 py-3 text-sm font-medium`}
+                    style={{ animationDelay: `${980 + index * 70}ms` }}
                   >
                     <span className={`${styles.landingChipIcon} flex size-7 shrink-0 items-center justify-center rounded-full`}>
                       {index === 0 ? (
@@ -217,18 +329,19 @@ export default function HomePage() {
               </div>
 
               <div className="mt-9 grid items-center gap-8 lg:grid-cols-[0.82fr_1.18fr] xl:gap-12">
-                <div className="relative mx-auto w-full max-w-[420px]">
+                <div className={`${styles.landingRevealLeft} relative mx-auto w-full max-w-[420px]`}>
                   <div className={`${styles.landingPanelImage} relative h-[320px] overflow-hidden`}>
                     <Image
-                      src="/images/logos/cn_looks.jpg"
+                      src="/images/optimized/side-look-cn-panel.jpg"
                       alt="Area sekolah SMK Citra Negara"
                       fill
+                      sizes="(min-width: 1024px) 420px, 92vw"
                       className="object-cover object-left"
                     />
                     <div className={`${styles.landingImageSoftOverlay} absolute inset-0`} />
                   </div>
 
-                  <div className={`${styles.landingFloatCard} absolute bottom-5 right-[-6px] px-4 py-3`}>
+                  <div className={`${styles.landingFloatCard} ${styles.landingFloatReveal} absolute bottom-5 right-[-6px] px-4 py-3`}>
                     <div className="flex items-center gap-3">
                       <span className={`${styles.landingAccentText} flex size-9 items-center justify-center rounded-full bg-emerald-50`}>
                         <FaSchool className="size-4" />
@@ -241,7 +354,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="space-y-5">
+                <div className={`${styles.landingRevealRight} space-y-5`}>
                   <div className="space-y-3">
                     <h2 className={`${styles.landingInkText} font-heading text-3xl font-bold tracking-tight md:text-[2.8rem]`}>
                       Keistimewaan Aplikasi
@@ -252,7 +365,11 @@ export default function HomePage() {
 
                   <div className="space-y-4">
                     {excellencePoints.map((point, index) => (
-                      <div key={point} className="flex items-start gap-3">
+                      <div
+                        key={point}
+                        className={`${styles.landingReveal} flex items-start gap-3`}
+                        style={{ animationDelay: `${1240 + index * 90}ms` }}
+                      >
                         <span className={`${styles.landingAccentText} mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-50`}>
                           {index === 0 ? (
                             <FaHeartbeat className="size-4" />
@@ -275,7 +392,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-10 px-2 py-4 md:px-4 md:py-5 xl:px-6">
-              <div className="text-center">
+              <div className={`${styles.landingReveal} text-center`}>
                 <div className={`${styles.landingMajorBadge} inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em]`}>
                   <FaStar className="size-3.5" />
                   Jurusan Unggulan
@@ -293,24 +410,23 @@ export default function HomePage() {
                 {majors.map((major, index) => (
                   (() => {
                     const MajorIcon = majorIcons[major.name as keyof typeof majorIcons] as IconType;
+                    const majorImage = majorImages[major.name as keyof typeof majorImages];
+                    const majorImagePosition =
+                      majorImagePositions[major.name as keyof typeof majorImagePositions];
 
                     return (
                   <article
                     key={major.name}
-                    className={`${styles.landingMajorCard} group relative mx-auto w-full max-w-[310px] overflow-hidden transition duration-500 hover:-translate-y-2`}
+                    className={`${styles.landingMajorCard} ${styles.landingReveal} group relative mx-auto w-full max-w-[310px] overflow-hidden transition duration-500 hover:-translate-y-2`}
+                    style={{ animationDelay: `${1420 + index * 85}ms` }}
                   >
                     <div className="relative h-[340px]">
                       <Image
-                        src="/images/logos/cn_looks.jpg"
+                        src={majorImage}
                         alt={`Jurusan ${major.name} di SMK Citra Negara`}
                         fill
-                        className={`object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-[0.6deg] ${
-                          index % 3 === 0
-                            ? "object-[24%_center]"
-                            : index % 3 === 1
-                              ? "object-center"
-                              : "object-[78%_center]"
-                        }`}
+                        sizes="(min-width: 1024px) 310px, (min-width: 640px) 45vw, 86vw"
+                        className={`object-cover ${majorImagePosition} transition duration-700 group-hover:scale-110 group-hover:rotate-[0.6deg]`}
                       />
                       <div className={`${styles.landingMajorOverlay} absolute inset-0`} />
                       <div className="absolute inset-x-0 top-0 p-4">
@@ -342,33 +458,34 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className={`${styles.landingReviewSection} mt-8 px-6 py-7 md:px-8 md:py-8 xl:px-12`}>
+            <div className={`${styles.landingReviewSection} ${styles.landingReveal} mt-8 px-6 py-7 md:px-8 md:py-8 xl:px-12`}>
               <TestimonialsCarousel testimonials={testimonials} />
             </div>
 
             <div className="mt-12 px-2 md:px-4 xl:px-6">
-              <div className={`${styles.landingCtaShell} relative overflow-hidden rounded-[42px] px-6 py-8 md:px-10 md:py-10 xl:px-12 xl:py-12`}>
+              <div className={`${styles.landingCtaShell} ${styles.landingReveal} relative overflow-hidden rounded-[42px] px-6 py-8 md:px-10 md:py-10 xl:px-12 xl:py-12`}>
                 <div className={`${styles.landingCtaGlow} absolute inset-0`} />
                 <div className="absolute right-[-120px] top-[-120px] h-[260px] w-[260px] rounded-full bg-emerald-300/12 blur-3xl" />
                 <div className="absolute bottom-[-90px] left-[46%] h-[220px] w-[220px] rounded-full bg-teal-200/10 blur-3xl" />
 
                 <div className="relative grid items-center gap-8 lg:grid-cols-[0.86fr_1.14fr]">
-                  <div className="relative mx-auto w-full max-w-[390px]">
+                  <div className={`${styles.landingRevealLeft} relative mx-auto w-full max-w-[390px]`}>
                     <div className={`${styles.landingCtaImageFrame} absolute -left-4 -top-4 h-24 w-24 rounded-[28px]`} />
                     <div className={`${styles.landingCtaImageFrame} absolute -bottom-4 -right-4 h-24 w-24 rounded-[28px]`} />
                     <div className="absolute -bottom-5 -right-5 h-28 w-28 rounded-full bg-emerald-300/18 blur-2xl" />
                     <div className={`${styles.landingCtaImage} relative h-[220px] overflow-hidden md:h-[278px]`}>
                       <Image
-                        src="/images/logos/cn_looks.jpg"
+                        src="/images/optimized/coridor-cn-panel.jpg"
                         alt="Area sekolah untuk akses aplikasi absensi"
                         fill
+                        sizes="(min-width: 1024px) 390px, 92vw"
                         className="object-cover object-center transition duration-700 hover:scale-105"
                       />
                       <div className={`${styles.landingCtaImageOverlay} absolute inset-0`} />
                     </div>
                   </div>
 
-                  <div className="relative max-w-[640px]">
+                  <div className={`${styles.landingRevealRight} relative max-w-[640px]`}>
                     <div className={`${styles.landingCtaBadge} inline-flex items-center rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em]`}>
                       Portal Absensi
                     </div>
@@ -405,21 +522,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className={`${styles.landingFooterShell} relative mt-10 overflow-hidden px-6 pb-10 pt-18 text-white md:px-8`}>
+      <footer className={`${styles.landingFooterShell} ${styles.landingReveal} relative mt-8 overflow-hidden px-4 pb-8 pt-10 text-white sm:px-6 md:mt-10 md:px-8 md:pb-10 md:pt-18`}>
         <div className="absolute left-[8%] top-12 h-24 w-24 rounded-full bg-emerald-400/10 blur-3xl" />
         <div className="absolute right-[10%] top-16 h-28 w-28 rounded-full bg-teal-300/8 blur-3xl" />
         <div className="mx-auto max-w-[1480px]">
-          <div className={`${styles.landingFooterGlass} grid gap-10 rounded-b-[36px] px-8 py-10 lg:grid-cols-[1.1fr_0.9fr_0.8fr] lg:items-start`}>
+          <div className={`${styles.landingFooterGlass} grid gap-8 rounded-[28px] px-6 py-8 sm:px-8 sm:py-10 md:rounded-b-[36px] lg:grid-cols-[1.1fr_0.9fr_0.8fr] lg:items-start`}>
             <div>
               <div className="inline-flex items-center gap-3">
-                <div className={`${styles.landingFooterBrandBadge} flex size-12 items-center justify-center rounded-2xl`}>
+                <div className={`${styles.landingFooterBrandBadge} flex size-11 shrink-0 items-center justify-center rounded-2xl sm:size-12`}>
                   <FaSchool className="size-5" />
                 </div>
                 <div>
-                  <p className={`${styles.landingFooterKicker} text-xs font-semibold uppercase tracking-[0.28em]`}>
+                  <p className={`${styles.landingFooterKicker} text-[10px] font-semibold uppercase tracking-[0.26em] sm:text-xs sm:tracking-[0.28em]`}>
                     Absensi Siswa
                   </p>
-                  <h3 className="mt-1 text-2xl font-bold tracking-tight">
+                  <h3 className="mt-1 text-xl font-bold tracking-tight sm:text-2xl">
                     SMK CITRA NEGARA
                   </h3>
                 </div>
@@ -431,7 +548,7 @@ export default function HomePage() {
             </div>
 
             <div>
-              <p className={`${styles.landingFooterKicker} text-sm font-semibold uppercase tracking-[0.24em]`}>
+              <p className={`${styles.landingFooterKicker} text-xs font-semibold uppercase tracking-[0.24em] sm:text-sm`}>
                 Nilai Utama
               </p>
               <div className="mt-5 grid gap-3">
@@ -440,8 +557,8 @@ export default function HomePage() {
                   "Siap dipakai multi peran sekolah",
                   "Desain bersih, cepat, dan terintegrasi",
                 ].map((item) => (
-                  <div key={item} className="flex items-start gap-3 text-sm text-white/72">
-                    <span className={`${styles.landingFooterCheck} mt-1 flex size-6 items-center justify-center rounded-full`}>
+                  <div key={item} className="flex items-center gap-3 text-sm text-white/72">
+                    <span className={`${styles.landingFooterCheck} flex size-6 shrink-0 items-center justify-center rounded-full`}>
                       <FaCheckCircle className="size-3.5" />
                     </span>
                     <span>{item}</span>
@@ -451,15 +568,17 @@ export default function HomePage() {
             </div>
 
             <div>
-              <p className={`${styles.landingFooterKicker} text-sm font-semibold uppercase tracking-[0.24em]`}>
+              <p className={`${styles.landingFooterKicker} text-xs font-semibold uppercase tracking-[0.24em] sm:text-sm`}>
                 Hubungi
               </p>
               <div className="mt-5 flex items-center gap-3">
-                {contactLinks.map(({ icon: Icon, label }) => (
+                {contactLinks.map(({ icon: Icon, label, href }) => (
                   <a
                     key={label}
-                    href="#"
+                    href={href}
                     aria-label={label}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`${styles.landingFooterContact} inline-flex size-11 items-center justify-center rounded-2xl transition hover:-translate-y-0.5`}
                   >
                     <Icon className="size-4.5" />
@@ -474,7 +593,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-6 text-center text-sm text-white/56">
+          <div className="mt-7 border-t border-white/10 pt-5 text-center text-xs leading-6 text-white/56 sm:mt-8 sm:pt-6 sm:text-sm">
             <p>2026@ SMK CITRA NEGARA ALL RIGHT RESERVED</p>
           </div>
         </div>

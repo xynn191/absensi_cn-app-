@@ -161,7 +161,6 @@ export function BKDashboardPage() {
               percentage={attendancePercentage}
               title="Kehadiran Hari Ini"
               subtitle="Snapshot absensi seluruh kelas hari ini"
-              emptyTitle="Belum ada data absensi"
               badgeText="Hari ini"
             />
           </section>

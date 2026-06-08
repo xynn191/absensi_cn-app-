@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   BookOpenCheck,
   ClipboardList,
+  Building2,
   FileClock,
   GraduationCap,
   History,
@@ -58,7 +59,7 @@ export function StaffSidebar({
             <div className="flex items-center gap-3">
               <div className="flex size-16 items-center justify-center">
                 <Image
-                  src="/images/logos/logo_cn_downscale.png"
+                  src="/images/optimized/logo-cn.png"
                   alt="Logo SMK Citra Negara"
                   width={52}
                   height={52}
@@ -129,6 +130,7 @@ export const adminSidebarItems = [
   { label: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
   { label: "Guru", href: "/dashboard/admin/teachers", icon: GraduationCap },
   { label: "Siswa", href: "/dashboard/admin/students", icon: Users },
+  { label: "Kelas", href: "/dashboard/admin/classes", icon: Building2 },
   { label: "Admin", href: "/dashboard/admin/admins", icon: ShieldCheck },
   { label: "Role Management", href: "/dashboard/admin/users", icon: UserCog },
 ] satisfies StaffSidebarItem[];

@@ -70,6 +70,7 @@ export function StudentDashboardPage() {
   const dashboardQuery = useQuery({
     queryKey: ["student-dashboard"],
     queryFn: getStudentDashboard,
+    refetchInterval: 30_000,
   });
 
   const submitMutation = useMutation({

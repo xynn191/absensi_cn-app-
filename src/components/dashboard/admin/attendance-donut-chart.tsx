@@ -1,8 +1,6 @@
 "use client";
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { ChartNoAxesColumn } from "lucide-react";
-import { EmptyState } from "@/components/dashboard/admin/empty-state";
 import { MeasuredChart } from "@/components/dashboard/admin/measured-chart";
 
 type AttendanceDonutChartProps = {
@@ -15,7 +13,6 @@ type AttendanceDonutChartProps = {
   title?: string;
   subtitle?: string;
   badgeText?: string;
-  emptyTitle?: string;
 };
 
 export function AttendanceDonutChart({
@@ -28,7 +25,6 @@ export function AttendanceDonutChart({
   title = "Persentase Kehadiran",
   subtitle = "Snapshot kehadiran sekolah hari ini",
   badgeText = "Hari ini",
-  emptyTitle = "Belum ada data absensi",
 }: AttendanceDonutChartProps) {
   const data = [
     { name: "Hadir", value: present || 0, color: "#63c98f" },
@@ -52,9 +48,9 @@ export function AttendanceDonutChart({
         </span>
       </div>
 
-      <div className="mt-4 grid gap-5 md:grid-cols-[1.05fr_0.95fr]">
-        <div className="relative min-w-0">
-          <MeasuredChart className="h-[220px] min-w-0">
+      <div className="mt-4 flex justify-center">
+        <div className="relative w-full max-w-[300px] min-w-0">
+          <MeasuredChart className="h-[230px] min-w-0">
             {({ width, height }) => {
               const chartSize = Math.min(width, height);
               const outerRadius = Math.max(Math.floor(chartSize / 2) - 18, 72);
@@ -104,12 +100,6 @@ export function AttendanceDonutChart({
             </div>
           </div>
         </div>
-
-        <EmptyState
-          icon={ChartNoAxesColumn}
-          compact
-          title={emptyTitle}
-        />
       </div>
     </article>
   );

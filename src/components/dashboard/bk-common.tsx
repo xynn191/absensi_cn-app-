@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { resolveApiAssetUrl } from "@/lib/config/site";
 import { formatDisplayLabel } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { id as localeID } from "date-fns/locale";
@@ -127,17 +128,7 @@ export function ReviewStatusPill({ reviewed }: { reviewed: boolean }) {
 }
 
 export function normalizeAttachmentUrl(attachment: string) {
-  if (attachment.startsWith("http://") || attachment.startsWith("https://")) {
-    return attachment;
-  }
-
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080/api/v1";
-  try {
-    const origin = new URL(baseUrl).origin;
-    return `${origin}${attachment.startsWith("/") ? attachment : `/${attachment}`}`;
-  } catch {
-    return attachment;
-  }
+  return resolveApiAssetUrl(attachment);
 }
 
 export function isImageAttachment(attachment: string) {

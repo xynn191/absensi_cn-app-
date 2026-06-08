@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/premium-modal";
 import { RadixSelectField } from "@/components/ui/radix-select";
 import { Textarea } from "@/components/ui/textarea";
+import { resolveApiAssetUrl } from "@/lib/config/site";
 import { type FieldErrors, hasFieldErrors, validateRequired } from "@/lib/form-validation";
 import {
   getTeacherHomeroomAttendanceOverview,
@@ -49,7 +50,6 @@ import {
   ImageIcon,
   LayoutPanelTop,
   NotebookText,
-  PencilLine,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -109,6 +109,7 @@ export function WalasAttendancePage() {
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [reviewTarget, setReviewTarget] = useState<StaffAttendanceRecord | null>(null);
+  const [proofTarget, setProofTarget] = useState<StaffAttendanceRecord | null>(null);
 
   const dateValue = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
 
@@ -203,6 +204,22 @@ export function WalasAttendancePage() {
     ].slice(0, 6),
     [summary.repeated_alpha, summary.repeated_late],
   );
+  const sortedRecords = useMemo(() => {
+    if (statusFilter !== "Semua") {
+      return records;
+    }
+
+    return [...records].sort((first, second) => {
+      const firstReviewed = Boolean(first.verified_at);
+      const secondReviewed = Boolean(second.verified_at);
+
+      if (firstReviewed !== secondReviewed) {
+        return firstReviewed ? 1 : -1;
+      }
+
+      return first.student_name.localeCompare(second.student_name, "id");
+    });
+  }, [records, statusFilter]);
 
   return (
     <StaffShell
@@ -393,7 +410,7 @@ export function WalasAttendancePage() {
                   </div>
                 ) : overviewQuery.isLoading ? (
                   <AttendanceTableSkeleton />
-                ) : records.length === 0 ? (
+                ) : sortedRecords.length === 0 ? (
                   <div className="p-5">
                     <EmptyState
                       icon={FileSearch}
@@ -415,10 +432,14 @@ export function WalasAttendancePage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {records.map((record) => (
+                        {sortedRecords.map((record) => (
                           <tr
                             key={record.id}
-                            className="border-t border-slate-100 text-sm text-slate-600 transition-colors hover:bg-emerald-50/35"
+                            className={`border-t border-slate-100 text-sm text-slate-600 transition-colors ${
+                              !record.verified_at && statusFilter === "Semua"
+                                ? "bg-amber-50/45 hover:bg-amber-50/70"
+                                : "hover:bg-emerald-50/35"
+                            }`}
                           >
                             <td className="px-5 py-4">
                               <div className="space-y-1">
@@ -456,8 +477,9 @@ export function WalasAttendancePage() {
                                   variant="ghost"
                                   size="icon"
                                   className="size-10 rounded-2xl border border-emerald-100 text-emerald-700 transition-colors hover:border-emerald-200 hover:bg-emerald-50"
-                                  onClick={() => openAttendanceProof(record.photo_url)}
+                                  onClick={() => setProofTarget(record)}
                                   disabled={!record.photo_url}
+                                  aria-label="Lihat bukti absensi"
                                 >
                                   <ImageIcon className="size-4.5" />
                                 </Button>
@@ -465,10 +487,11 @@ export function WalasAttendancePage() {
                                   type="button"
                                   variant="ghost"
                                   size="icon"
-                                  className="size-10 rounded-2xl border border-slate-200 text-slate-600 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
+                                  className="size-10 rounded-2xl border border-emerald-100 text-emerald-700 transition-colors hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
                                   onClick={() => setReviewTarget(record)}
+                                  aria-label="Verifikasi absensi"
                                 >
-                                  <PencilLine className="size-4.5" />
+                                  <BadgeCheck className="size-4.5" />
                                 </Button>
                               </div>
                             </td>
@@ -491,7 +514,6 @@ export function WalasAttendancePage() {
                 percentage={attendancePercentage}
                 title="Distribusi Kehadiran"
                 subtitle={`Snapshot ${overview.homeroom.class_name || "kelas walas"} pada ${formatFriendlyDate(overview.date)}`}
-                emptyTitle="Belum ada data absensi di tanggal ini"
                 badgeText="Harian"
               />
 
@@ -633,6 +655,12 @@ export function WalasAttendancePage() {
             }}
             onSubmit={(payload) => reviewMutation.mutate(payload)}
             isPending={reviewMutation.isPending}
+          />
+          <AttendanceProofModal
+            record={proofTarget}
+            onOpenChange={(open) => {
+              if (!open) setProofTarget(null);
+            }}
           />
         </>
       )}
@@ -853,7 +881,7 @@ function AttendanceReviewModal({
       onOpenChange={onOpenChange}
       title={record ? `Review ${record.student_name}` : "Review Absensi"}
       description="Perbarui status dan catatan verifikasi untuk record absensi siswa di kelas walas."
-      icon={PencilLine}
+      icon={BadgeCheck}
       className="sm:!max-w-[760px]"
     >
       {record ? (
@@ -924,6 +952,64 @@ function AttendanceReviewModal({
             >
               {isPending ? "Menyimpan..." : "Simpan Review"}
             </Button>
+          </div>
+        </div>
+      ) : null}
+    </PremiumModal>
+  );
+}
+
+function AttendanceProofModal({
+  record,
+  onOpenChange,
+}: {
+  record: StaffAttendanceRecord | null;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const photoUrl = normalizeAttendanceProofUrl(record?.photo_url);
+
+  return (
+    <PremiumModal
+      open={Boolean(record)}
+      onOpenChange={onOpenChange}
+      title={record ? `Bukti ${record.student_name}` : "Bukti Absensi"}
+      description="Preview foto absensi siswa tanpa membuka tab baru."
+      icon={ImageIcon}
+      className="sm:!max-w-[760px]"
+    >
+      {record ? (
+        <div className="grid gap-4">
+          <div className="rounded-[22px] border border-emerald-100/70 bg-white/92 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-1">
+                <p className="text-base font-semibold text-slate-900">{record.student_name}</p>
+                <p className="text-sm text-slate-500">
+                  {record.nis} • {record.class_name}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {formatFriendlyDate(record.attendance_date)} • {formatCheckInTime(record.check_in_at)}
+                </p>
+              </div>
+              <AttendanceStatusPill status={record.status} />
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-[26px] border border-emerald-100/80 bg-[linear-gradient(180deg,#f8fffb_0%,#eefbf4_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]">
+            {photoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={photoUrl}
+                alt={`Bukti absensi ${record.student_name}`}
+                className="max-h-[62vh] w-full rounded-[20px] object-contain"
+              />
+            ) : (
+              <EmptyState
+                icon={ImageIcon}
+                title="Bukti foto belum tersedia"
+                description="Record ini belum memiliki foto absensi yang bisa ditampilkan."
+                compact
+              />
+            )}
           </div>
         </div>
       ) : null}
@@ -1016,24 +1102,8 @@ function formatCheckInTime(value?: string) {
   }
 }
 
-function openAttendanceProof(photoUrl?: string) {
-  if (!photoUrl || typeof window === "undefined") {
-    return;
-  }
-
-  const normalized = photoUrl.startsWith("http")
-    ? photoUrl
-    : `${getApiOrigin()}${photoUrl.startsWith("/") ? photoUrl : `/${photoUrl}`}`;
-  window.open(normalized, "_blank", "noopener,noreferrer");
-}
-
-function getApiOrigin() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080/api/v1";
-  try {
-    return new URL(baseUrl).origin;
-  } catch {
-    return "http://localhost:8080";
-  }
+function normalizeAttendanceProofUrl(photoUrl?: string) {
+  return resolveApiAssetUrl(photoUrl);
 }
 
 function getWalasAttendanceSectionTitle(pathname: string) {
