@@ -45,6 +45,7 @@ export function StudentHistoryPage() {
   const historyQuery = useQuery({
     queryKey: ["student-history"],
     queryFn: getStudentHistory,
+    staleTime: 0,
   });
 
   const history = historyQuery.data;

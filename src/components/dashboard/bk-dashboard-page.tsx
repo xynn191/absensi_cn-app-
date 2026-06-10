@@ -45,6 +45,8 @@ export function BKDashboardPage() {
   const dashboardQuery = useQuery({
     queryKey: ["bk-dashboard"],
     queryFn: getBKDashboard,
+    refetchInterval: 30_000,
+    staleTime: 0,
   });
 
   const dashboard = normalizeDashboard(dashboardQuery.data ?? fallbackDashboard);

@@ -47,6 +47,8 @@ export function WalasDashboardPage() {
   const dashboardQuery = useQuery({
     queryKey: ["teacher-homeroom-dashboard"],
     queryFn: getTeacherHomeroomDashboard,
+    refetchInterval: 30_000,
+    staleTime: 0,
   });
 
   const dashboard = normalizeHomeroomDashboard(

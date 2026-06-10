@@ -121,6 +121,8 @@ export function WalasAttendancePage() {
         status: statusFilter === "Semua" ? "" : statusFilter,
         query: query.trim(),
       }),
+    refetchInterval: 30_000,
+    staleTime: 0,
   });
 
   const reviewMutation = useMutation({

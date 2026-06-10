@@ -86,6 +86,8 @@ export function BKAttendancePage() {
         class_id: classFilter === "Semua" ? "" : classFilter,
         query: query.trim(),
       }),
+    refetchInterval: 30_000,
+    staleTime: 0,
   });
 
   const reviewMutation = useMutation({
