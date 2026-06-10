@@ -75,7 +75,11 @@ export function StudentDashboardPage() {
 
   const submitMutation = useMutation({
     mutationFn: submitStudentDailyReport,
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      if (data?.can_submit !== false) {
+        toast.error("Absensi gagal tersimpan, silakan coba lagi.");
+        return;
+      }
       toast.success("Absensi berhasil dikirim.");
       setModalOpen(false);
       resetCaptureState();
