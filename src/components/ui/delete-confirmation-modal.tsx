@@ -43,12 +43,12 @@ export function DeleteConfirmationModal({
           className,
         )}
       >
-        <div className="relative flex gap-4 px-5 py-5 sm:px-6">
+        <div className="flex items-start gap-4 px-5 py-5 sm:px-6">
           <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-[0.95rem] bg-rose-50 text-rose-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
             <Trash2 className="size-5" />
           </span>
 
-          <div className="min-w-0 flex-1 pr-8">
+          <div className="min-w-0 flex-1">
             <DialogTitle className="font-sans text-[1.08rem] font-semibold tracking-[-0.025em] text-slate-950 sm:text-[1.18rem]">
               {title}
             </DialogTitle>
@@ -63,7 +63,7 @@ export function DeleteConfirmationModal({
           <button
             type="button"
             aria-label="Tutup modal"
-            className="absolute right-5 top-5 inline-flex size-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+            className="shrink-0 inline-flex size-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >

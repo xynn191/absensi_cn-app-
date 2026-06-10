@@ -158,7 +158,7 @@ export function WalasStudentsPage() {
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
                 <StaffStatCard
                   label="Total Siswa"
                   value={students.length}
@@ -530,9 +530,9 @@ function StaffStatCard({
             {value}
           </p>
         </div>
-        <div className="flex flex-col items-center text-right">
+        <div className="flex shrink-0 flex-col items-center text-right">
           <span
-            className={`inline-flex size-12 items-center justify-center rounded-[18px] bg-gradient-to-br ${accentClass} text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)]`}
+            className={`inline-flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ${accentClass} text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)]`}
           >
             <Icon className="size-5" />
           </span>

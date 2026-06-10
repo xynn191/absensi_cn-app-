@@ -180,13 +180,13 @@ export function ClassManagementSection({
       accentClass: "from-teal-500 via-emerald-500 to-green-500",
     },
     {
-      label: "Siswa Terhubung",
+      label: "Siswa",
       value: totalStudents,
       icon: Users,
       accentClass: "from-sky-500 via-cyan-500 to-emerald-500",
     },
     {
-      label: "Walas Terpasang",
+      label: "Walas",
       value: homeroomCovered,
       icon: ShieldCheck,
       accentClass: "from-amber-400 via-orange-400 to-emerald-500",
@@ -233,7 +233,7 @@ export function ClassManagementSection({
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
             {kpiCards.map((card) => (
               <ClassStatCard key={card.label} {...card} />
             ))}
@@ -668,7 +668,7 @@ function ClassStatCard({
             {value}
           </p>
         </div>
-        <span className={`flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ${accentClass} text-white shadow-[0_18px_30px_rgba(16,185,129,0.18)]`}>
+        <span className={`flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${accentClass} text-white shadow-[0_18px_30px_rgba(16,185,129,0.18)]`}>
           <Icon className="size-5" />
         </span>
       </div>

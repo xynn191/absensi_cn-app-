@@ -458,7 +458,7 @@ export function StudentSection({
             </div>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
             {kpiCards.map((card) => (
               <StudentStatCard
                 key={card.label}
@@ -525,20 +525,25 @@ export function StudentSection({
         ) : null}
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as StudentTab)} className="mt-5 gap-4">
-          <TabsList className="grid w-full grid-cols-1 gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] sm:grid-cols-3">
-            <TabsTrigger value="profiles" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <UsersRound className="size-4" />
-              Profil Siswa
-            </TabsTrigger>
-            <TabsTrigger value="memberships" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <GraduationCap className="size-4" />
-              Penempatan Kelas
-            </TabsTrigger>
-            <TabsTrigger value="rules" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <TimerReset className="size-4" />
-              Aturan Absensi
-            </TabsTrigger>
-          </TabsList>
+          <div className="relative">
+            <div className="overflow-x-scroll pb-2.5 [&::-webkit-scrollbar]:h-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-emerald-100 xl:overflow-visible xl:pb-0">
+              <TabsList className="flex min-w-max gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] xl:min-w-0 xl:grid xl:w-full xl:grid-cols-3">
+                <TabsTrigger value="profiles" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                  <UsersRound className="size-4" />
+                  Profil Siswa
+                </TabsTrigger>
+                <TabsTrigger value="memberships" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                  <GraduationCap className="size-4" />
+                  Penempatan Kelas
+                </TabsTrigger>
+                <TabsTrigger value="rules" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                  <TimerReset className="size-4" />
+                  Aturan Absensi
+                </TabsTrigger>
+              </TabsList>
+            </div>
+            <div className="pointer-events-none absolute right-0 top-0 h-[calc(100%-10px)] w-28 bg-gradient-to-l from-white via-white/75 to-transparent xl:hidden" />
+          </div>
 
           <TabsContent value="profiles" className="mt-4">
             <StudentDataTableCard isLoading={isLoading} columnCount={9} emptyTitle="Belum ada siswa" emptyDescription="Tambahkan siswa baru agar data muncul pada daftar ini." icon={UsersRound}>
@@ -1534,8 +1539,8 @@ function StudentStatCard({
           <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-400">{label}</p>
           <p className="text-[2.15rem] font-semibold tracking-[-0.04em] text-slate-950">{value}</p>
         </div>
-        <div className="flex flex-col items-center text-right">
-          <span className={`inline-flex size-12 items-center justify-center rounded-[18px] bg-gradient-to-br ${accentClass} text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)]`}>
+        <div className="flex shrink-0 flex-col items-center text-right">
+          <span className={`inline-flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ${accentClass} text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)]`}>
             <Icon className="size-5" />
           </span>
         </div>

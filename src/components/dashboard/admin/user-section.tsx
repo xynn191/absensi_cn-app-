@@ -131,7 +131,7 @@ export function UserSection({
       accentClass: "from-emerald-500 via-teal-500 to-cyan-500",
     },
     {
-      label: "Administrator",
+      label: "Admin",
       value: staffUsers.filter((user) => user.role === "ADMIN").length,
       icon: ShieldCheck,
       accentClass: "from-teal-500 via-emerald-500 to-green-500",
@@ -190,7 +190,7 @@ export function UserSection({
             </div>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
             {kpiCards.map((card) => (
               <UserStatCard
                 key={card.label}
@@ -242,24 +242,29 @@ export function UserSection({
         ) : null}
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as UserTab)} className="mt-5 gap-4">
-          <TabsList className="grid w-full grid-cols-1 gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] sm:grid-cols-2 xl:grid-cols-4">
-            <TabsTrigger value="all" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <UsersRound className="size-4" />
-              Semua Akun
-            </TabsTrigger>
-            <TabsTrigger value="admins" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <ShieldCheck className="size-4" />
-              Administrator
-            </TabsTrigger>
-            <TabsTrigger value="bk" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <UserCog className="size-4" />
-              BK
-            </TabsTrigger>
-            <TabsTrigger value="teachers" className="w-full rounded-[18px] border border-transparent px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)]">
-              <GraduationCap className="size-4" />
-              Guru
-            </TabsTrigger>
-          </TabsList>
+          <div className="relative">
+            <div className="overflow-x-scroll pb-2.5 [&::-webkit-scrollbar]:h-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-emerald-100 xl:overflow-visible xl:pb-0">
+            <TabsList className="flex min-w-max gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] xl:min-w-0 xl:grid xl:w-full xl:grid-cols-4">
+              <TabsTrigger value="all" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                <UsersRound className="size-4" />
+                Semua Akun
+              </TabsTrigger>
+              <TabsTrigger value="admins" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                <ShieldCheck className="size-4" />
+                Administrator
+              </TabsTrigger>
+              <TabsTrigger value="bk" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                <UserCog className="size-4" />
+                BK
+              </TabsTrigger>
+              <TabsTrigger value="teachers" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
+                <GraduationCap className="size-4" />
+                Guru
+              </TabsTrigger>
+            </TabsList>
+            </div>
+            <div className="pointer-events-none absolute right-0 top-0 h-[calc(100%-10px)] w-28 bg-gradient-to-l from-white via-white/75 to-transparent xl:hidden" />
+          </div>
 
         {(["all", "admins", "bk", "teachers"] as UserTab[]).map((tab) => (
           <TabsContent key={tab} value={tab} className="mt-4">
@@ -601,8 +606,8 @@ function UserStatCard({
           <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-400">{label}</p>
           <p className="text-[2.15rem] font-semibold tracking-[-0.04em] text-slate-950">{value}</p>
         </div>
-        <div className="flex flex-col items-center text-right">
-          <span className={`inline-flex size-12 items-center justify-center rounded-[18px] bg-gradient-to-br ${accentClass} text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)]`}>
+        <div className="flex shrink-0 flex-col items-center text-right">
+          <span className={`inline-flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ${accentClass} text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)]`}>
             <Icon className="size-5" />
           </span>
         </div>

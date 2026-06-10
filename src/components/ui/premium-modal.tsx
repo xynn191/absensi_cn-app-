@@ -52,26 +52,24 @@ export function PremiumModal({
           className,
         )}
       >
-        <div className="relative flex items-start justify-between gap-4 overflow-hidden border-b border-slate-300/22 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(244,250,246,0.82)_100%)] px-[1.3rem] pt-[1.25rem] pb-[1.1rem] after:absolute after:inset-x-[1.3rem] after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,rgba(16,185,129,0.08)_0%,rgba(16,185,129,0.18)_22%,rgba(148,163,184,0.16)_52%,rgba(16,185,129,0.18)_78%,rgba(16,185,129,0.08)_100%)]">
-          <div className="flex min-w-0 items-center gap-4">
-            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#8df0c1_0%,#34d399_38%,#0f766e_100%)] text-white shadow-[0_14px_24px_rgba(16,185,129,0.2)]">
-              <Icon className="size-5" />
-            </span>
-            <div className="min-w-0">
-              <DialogTitle className="font-sans text-[1.08rem] font-semibold leading-[1.15] tracking-[-0.02em] text-slate-900 [text-rendering:geometricPrecision] sm:text-[1.16rem]">
-                {title}
-              </DialogTitle>
-              <DialogDescription className="mt-1.5 max-w-[34rem] text-[0.9rem] leading-[1.55] text-slate-500">
-                {description}
-              </DialogDescription>
-            </div>
+        <div className="relative flex items-start gap-4 overflow-hidden border-b border-slate-300/22 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(244,250,246,0.82)_100%)] px-[1.3rem] pt-[1.25rem] pb-[1.1rem] after:absolute after:inset-x-[1.3rem] after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,rgba(16,185,129,0.08)_0%,rgba(16,185,129,0.18)_22%,rgba(148,163,184,0.16)_52%,rgba(16,185,129,0.18)_78%,rgba(16,185,129,0.08)_100%)]">
+          <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#8df0c1_0%,#34d399_38%,#0f766e_100%)] text-white shadow-[0_14px_24px_rgba(16,185,129,0.2)]">
+            <Icon className="size-5" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <DialogTitle className="font-sans text-[1.08rem] font-semibold leading-[1.15] tracking-[-0.02em] text-slate-900 [text-rendering:geometricPrecision] sm:text-[1.16rem]">
+              {title}
+            </DialogTitle>
+            <DialogDescription className="mt-1.5 text-[0.9rem] leading-[1.55] text-slate-500">
+              {description}
+            </DialogDescription>
           </div>
 
           <button
             type="button"
             aria-label="Tutup modal"
             onClick={() => onOpenChange(false)}
-            className="absolute top-[1.1rem] right-[1.3rem] inline-flex h-[2.35rem] w-[2.35rem] shrink-0 items-center justify-center rounded-[0.85rem] border border-rose-300/22 bg-white/78 text-rose-500 transition-[transform,box-shadow,border-color,background-color] duration-180 hover:-translate-y-px hover:border-rose-300/42 hover:bg-rose-50/96 hover:shadow-[0_12px_24px_rgba(239,68,68,0.12)]"
+            className="mt-0.5 inline-flex h-[2.35rem] w-[2.35rem] shrink-0 items-center justify-center rounded-[0.85rem] border border-rose-300/22 bg-white/78 text-rose-500 transition-[transform,box-shadow,border-color,background-color] duration-180 hover:-translate-y-px hover:border-rose-300/42 hover:bg-rose-50/96 hover:shadow-[0_12px_24px_rgba(239,68,68,0.12)]"
           >
             <X className="size-4.5" />
           </button>

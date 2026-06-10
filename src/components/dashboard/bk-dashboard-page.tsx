@@ -165,7 +165,7 @@ export function BKDashboardPage() {
             />
           </section>
 
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-4 grid-cols-2 xl:grid-cols-4">
             {kpiCards.map((item, index) => (
               <motion.div
                 key={item.label}

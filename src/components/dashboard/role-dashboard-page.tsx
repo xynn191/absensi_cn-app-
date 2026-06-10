@@ -54,7 +54,7 @@ export function RoleDashboardPage({ expectedRole }: RoleDashboardPageProps) {
           secondaryAction={config.secondaryAction}
         />
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 grid-cols-2 xl:grid-cols-4">
           {config.stats.map((stat) => (
             <StatCard key={stat.label} {...stat} />
           ))}
