@@ -4,6 +4,7 @@ import { clearAuthSession, getAuthSession } from "@/lib/auth";
 
 export const apiClient = axios.create({
   baseURL: siteConfig.apiBaseUrl,
+  timeout: 110_000,
   headers: {
     "Content-Type": "application/json",
   },

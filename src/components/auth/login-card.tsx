@@ -19,6 +19,7 @@ export function LoginCard() {
   const [portal, setPortal] = useState<PortalType>("student");
   const prefersReducedMotion = useReducedMotion();
   const [supportsInteractiveTilt, setSupportsInteractiveTilt] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(true);
   const rotateX = useSpring(useMotionValue(0), { stiffness: 180, damping: 18 });
   const rotateY = useSpring(useMotionValue(0), { stiffness: 180, damping: 18 });
   const glowX = useSpring(useMotionValue(50), { stiffness: 200, damping: 24 });
@@ -30,21 +31,25 @@ export function LoginCard() {
   const glowPosition = useMotionTemplate`${glowX}% ${glowY}%`;
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const tiltQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const touchQuery = window.matchMedia("(hover: none)");
 
     const updateSupport = () => {
-      setSupportsInteractiveTilt(mediaQuery.matches);
+      setSupportsInteractiveTilt(tiltQuery.matches);
+      setIsTouchDevice(touchQuery.matches);
     };
 
     updateSupport();
-    mediaQuery.addEventListener("change", updateSupport);
+    tiltQuery.addEventListener("change", updateSupport);
+    touchQuery.addEventListener("change", updateSupport);
 
     return () => {
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
       }
 
-      mediaQuery.removeEventListener("change", updateSupport);
+      tiltQuery.removeEventListener("change", updateSupport);
+      touchQuery.removeEventListener("change", updateSupport);
     };
   }, []);
 
@@ -119,7 +124,7 @@ export function LoginCard() {
         />
         <motion.div
           className="pointer-events-none absolute inset-y-0 left-[-20%] w-1/2 transform-gpu bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.22),transparent)] will-change-transform"
-          animate={prefersReducedMotion ? undefined : { x: ["-30%", "180%"] }}
+          animate={prefersReducedMotion || isTouchDevice ? undefined : { x: ["-30%", "180%"] }}
           transition={
             prefersReducedMotion
               ? undefined
@@ -143,7 +148,7 @@ export function LoginCard() {
                   >
                     <div className="absolute inset-0 rounded-full bg-emerald-200/30 blur-md" />
                     <motion.div
-                      animate={prefersReducedMotion ? undefined : { y: [0, -3, 0] }}
+                      animate={prefersReducedMotion || isTouchDevice ? undefined : { y: [0, -3, 0] }}
                       transition={
                         prefersReducedMotion
                           ? undefined

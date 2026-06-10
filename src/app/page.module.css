@@ -24,7 +24,6 @@
 .landingRevealLeft,
 .landingRevealRight {
   animation: landingRevealUp 760ms cubic-bezier(0.19, 1, 0.22, 1) both;
-  will-change: transform, opacity;
 }
 
 .landingRevealLeft {
@@ -347,6 +346,33 @@
 
   50% {
     transform: translate3d(10px, -12px, 0) rotate(4deg);
+  }
+}
+
+@media (hover: none) {
+  .landingHeroImage {
+    animation: landingImageWakeMobile 700ms ease-out both;
+  }
+
+  .landingMajorTopBadge,
+  .landingMajorIconBadge,
+  .landingMajorPanel,
+  .landingCtaImageFrame,
+  .landingCtaBadge,
+  .landingCtaPill,
+  .landingFooterGlass {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+@keyframes landingImageWakeMobile {
+  from {
+    filter: brightness(0.84);
+  }
+
+  to {
+    filter: brightness(1);
   }
 }
 

@@ -72,7 +72,7 @@ export function BKAttendancePage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [classFilter, setClassFilter] = useState("Semua");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [reviewTarget, setReviewTarget] = useState<StaffAttendanceRecord | null>(null);
 
   const dateValue = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";

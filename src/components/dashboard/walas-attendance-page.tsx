@@ -107,7 +107,7 @@ export function WalasAttendancePage() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Semua");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [reviewTarget, setReviewTarget] = useState<StaffAttendanceRecord | null>(null);
   const [proofTarget, setProofTarget] = useState<StaffAttendanceRecord | null>(null);
 
