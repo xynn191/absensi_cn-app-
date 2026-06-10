@@ -41,6 +41,7 @@ import {
   FileText,
   History,
   ImageUp,
+  ShieldAlert,
   ShieldCheck,
   Sparkles,
   TimerReset,
@@ -108,6 +109,14 @@ export function StudentDashboardPage() {
   const stats = dashboard?.stats;
   const canSubmit = Boolean(today?.can_submit);
   const alreadySubmitted = Boolean(today?.attendance && !today.can_submit);
+  const isWindowClosed = !canSubmit && !alreadySubmitted && (() => {
+    if (!today?.current_time || !today?.window.late_until) return false;
+    const serverNow = new Date(today.current_time);
+    const [h, m, s] = today.window.late_until.split(":").map(Number);
+    const lateUntil = new Date(serverNow);
+    lateUntil.setHours(h, m, s ?? 0, 0);
+    return serverNow > lateUntil;
+  })();
 
   function resetCaptureState() {
     setPhotoFile(null);
@@ -177,7 +186,11 @@ export function StudentDashboardPage() {
                   </span>
                   <div className="max-w-2xl space-y-3">
                     <h1 className="text-[2.6rem] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-[3.2rem]">
-                      {alreadySubmitted ? "Absensi hari ini sudah terkirim." : "Ambil foto dan kirim absensi hari ini."}
+                      {alreadySubmitted
+                        ? "Absensi hari ini sudah terkirim."
+                        : isWindowClosed
+                          ? "Kamu tidak hadir hari ini."
+                          : "Ambil foto dan kirim absensi hari ini."}
                     </h1>
                     <p className="max-w-xl text-base leading-7 text-emerald-50/82">
                       {today?.message ??
@@ -193,8 +206,18 @@ export function StudentDashboardPage() {
                     disabled={!canSubmit || dashboardQuery.isLoading}
                     className="h-16 rounded-full border border-white/28 bg-white px-7 text-base font-semibold text-emerald-800 shadow-[0_16px_30px_rgba(2,44,34,0.18)] transition hover:bg-emerald-50 hover:shadow-[0_18px_34px_rgba(2,44,34,0.22)] disabled:bg-white/35 disabled:text-white/70"
                   >
-                    {canSubmit ? <Camera className="size-5" /> : <TimerReset className="size-5" />}
-                    {canSubmit ? "Absen Hari Ini" : "Cooldown Sampai Besok"}
+                    {canSubmit ? (
+                      <Camera className="size-5" />
+                    ) : isWindowClosed ? (
+                      <ShieldAlert className="size-5" />
+                    ) : (
+                      <TimerReset className="size-5" />
+                    )}
+                    {canSubmit
+                      ? "Absen Hari Ini"
+                      : isWindowClosed
+                        ? "Waktu Absensi Sudah Habis"
+                        : "Cooldown Sampai Besok"}
                   </Button>
                   <div className="rounded-2xl border border-white/18 bg-white/12 px-4 py-3 text-sm leading-6 text-emerald-50/86">
                     Batas hadir {formatClock(today?.window.on_time_until)} WIB, terlambat sampai{" "}
@@ -211,11 +234,17 @@ export function StudentDashboardPage() {
                         Status Hari Ini
                       </p>
                       <h2 className="mt-3 text-2xl font-semibold text-slate-950">
-                        {today?.attendance ? "Sudah Terekam" : "Belum Ada Record"}
+                        {today?.attendance
+                          ? "Sudah Terekam"
+                          : isWindowClosed
+                            ? "Tidak Hadir"
+                            : "Belum Ada Record"}
                       </h2>
                     </div>
                     {today?.attendance ? (
                       <StudentStatusPill status={today.attendance.status} />
+                    ) : isWindowClosed ? (
+                      <StudentStatusPill status="alfa" />
                     ) : (
                       <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">
                         Menunggu
