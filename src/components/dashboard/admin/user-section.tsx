@@ -45,7 +45,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 
@@ -64,6 +64,7 @@ export function UserSection({
 }: UserSectionProps) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [activeTab, setActiveTab] = useState<UserTab>("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
@@ -105,7 +106,7 @@ export function UserSection({
     [users],
   );
 
-  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedQuery = deferredQuery.trim().toLowerCase();
 
   const filteredUsers = useMemo(() => {
     const base = staffUsers.filter((user) => {

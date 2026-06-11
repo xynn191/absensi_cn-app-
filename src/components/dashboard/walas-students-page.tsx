@@ -33,7 +33,7 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 
 const studentStatusOptions = [
   { value: "Semua", label: "Semua" },
@@ -54,6 +54,7 @@ const emptyHomeroom: StaffHomeroomContext = {
 
 export function WalasStudentsPage() {
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
@@ -76,7 +77,7 @@ export function WalasStudentsPage() {
   const homeroom = homeroomQuery.data ?? emptyHomeroom;
   const studentsData = studentsQuery.data;
   const students = studentsData ?? [];
-  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedQuery = deferredQuery.trim().toLowerCase();
 
   const filteredStudents = useMemo(() => {
     return (studentsData ?? []).filter((student) => {

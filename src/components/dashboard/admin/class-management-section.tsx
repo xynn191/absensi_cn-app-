@@ -34,7 +34,7 @@ import {
   Users,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { AdminClass, AdminClassPayload, AdminMajor, AdminSchoolYear } from "@/types/admin";
@@ -71,7 +71,7 @@ const emptyForm: ClassFormState = {
   is_active: true,
 };
 
-const gradeOptions = ["X", "XI", "XII", "XIII"];
+const gradeOptions = ["X", "XI", "XII"];
 
 const classModalInputClassName =
   "h-14 rounded-[1.25rem] border-slate-300/80 bg-[linear-gradient(180deg,#ffffff_0%,#f5fbf7_100%)] px-4 text-sm shadow-[0_14px_30px_rgba(15,23,42,0.05),inset_0_1px_0_rgba(255,255,255,0.95)] hover:border-emerald-400 hover:shadow-[0_0_0_3px_rgba(16,185,129,0.16),0_14px_30px_rgba(15,23,42,0.05)] focus-visible:border-emerald-500 focus-visible:ring-4 focus-visible:ring-emerald-200/80";
@@ -99,6 +99,7 @@ export function ClassManagementSection({
 }: ClassManagementSectionProps) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [statusFilter, setStatusFilter] = useState("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingClass, setEditingClass] = useState<AdminClass | null>(null);
@@ -113,7 +114,7 @@ export function ClassManagementSection({
   const homeroomCovered = classes.filter((item) => item.homeroom_teacher_name).length;
 
   const filteredClasses = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
+    const normalized = deferredQuery.trim().toLowerCase();
     return classes.filter((item) => {
       const matchesStatus =
         statusFilter === "all" ||
@@ -127,7 +128,7 @@ export function ClassManagementSection({
 
       return matchesStatus && matchesQuery;
     });
-  }, [classes, query, statusFilter]);
+  }, [classes, deferredQuery, statusFilter]);
 
   const createMutation = useMutation({
     mutationFn: createAdminClass,

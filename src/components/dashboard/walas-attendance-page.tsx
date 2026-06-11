@@ -106,20 +106,26 @@ const fallbackOverview: StaffHomeroomAttendanceOverview = {
 export function WalasAttendancePage() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [reviewTarget, setReviewTarget] = useState<StaffAttendanceRecord | null>(null);
   const [proofTarget, setProofTarget] = useState<StaffAttendanceRecord | null>(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), 350);
+    return () => clearTimeout(timer);
+  }, [query]);
+
   const dateValue = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
 
   const overviewQuery = useQuery({
-    queryKey: ["teacher-homeroom-attendance-overview", dateValue, statusFilter, query],
+    queryKey: ["teacher-homeroom-attendance-overview", dateValue, statusFilter, debouncedQuery],
     queryFn: () =>
       getTeacherHomeroomAttendanceOverview({
         date: dateValue,
         status: statusFilter === "Semua" ? "" : statusFilter,
-        query: query.trim(),
+        query: debouncedQuery.trim(),
       }),
     refetchInterval: 30_000,
     staleTime: 0,

@@ -80,7 +80,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 
@@ -129,6 +129,7 @@ export function StudentSection({
 }: StudentSectionProps) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [activeTab, setActiveTab] = useState<StudentTab>("profiles");
   const [profileModalOpen, setProfileModalOpen] = useState(false);
@@ -140,7 +141,7 @@ export function StudentSection({
   const [editingRule, setEditingRule] = useState<AdminAttendanceRule | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<StudentDeleteTarget | null>(null);
 
-  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedQuery = deferredQuery.trim().toLowerCase();
 
   const createStudentMutation = useMutation({
     mutationFn: createAdminStudent,
@@ -254,58 +255,64 @@ export function StudentSection({
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const filteredStudents = students.filter((student) => {
-    const matchesStatus =
-      statusFilter === "Semua" ||
-      (statusFilter === "Aktif" && student.is_active) ||
-      (statusFilter === "Nonaktif" && !student.is_active);
+  const filteredStudents = useMemo(
+    () =>
+      students.filter((student) => {
+        const matchesStatus =
+          statusFilter === "Semua" ||
+          (statusFilter === "Aktif" && student.is_active) ||
+          (statusFilter === "Nonaktif" && !student.is_active);
+        const matchesQuery =
+          normalizedQuery.length === 0 ||
+          student.name.toLowerCase().includes(normalizedQuery) ||
+          student.nis.toLowerCase().includes(normalizedQuery) ||
+          (student.nisn ?? "").toLowerCase().includes(normalizedQuery) ||
+          (student.birth_place ?? "").toLowerCase().includes(normalizedQuery) ||
+          (student.birth_date ?? "").toLowerCase().includes(normalizedQuery) ||
+          (student.birth_place_date ?? "").toLowerCase().includes(normalizedQuery) ||
+          (student.phone ?? "").toLowerCase().includes(normalizedQuery) ||
+          (student.parent_name ?? "").toLowerCase().includes(normalizedQuery);
+        return matchesStatus && matchesQuery;
+      }),
+    [students, statusFilter, normalizedQuery],
+  );
 
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      student.name.toLowerCase().includes(normalizedQuery) ||
-      student.nis.toLowerCase().includes(normalizedQuery) ||
-      (student.nisn ?? "").toLowerCase().includes(normalizedQuery) ||
-      (student.birth_place ?? "").toLowerCase().includes(normalizedQuery) ||
-      (student.birth_date ?? "").toLowerCase().includes(normalizedQuery) ||
-      (student.birth_place_date ?? "").toLowerCase().includes(normalizedQuery) ||
-      (student.phone ?? "").toLowerCase().includes(normalizedQuery) ||
-      (student.parent_name ?? "").toLowerCase().includes(normalizedQuery);
+  const filteredMemberships = useMemo(
+    () =>
+      memberships.filter((membership) => {
+        const matchesStatus =
+          statusFilter === "Semua" ||
+          (statusFilter === "Aktif" && membership.is_active) ||
+          (statusFilter === "Nonaktif" && !membership.is_active);
+        const matchesQuery =
+          normalizedQuery.length === 0 ||
+          membership.student_name.toLowerCase().includes(normalizedQuery) ||
+          membership.nis.toLowerCase().includes(normalizedQuery) ||
+          membership.class_name.toLowerCase().includes(normalizedQuery) ||
+          membership.school_year_name.toLowerCase().includes(normalizedQuery) ||
+          membership.status.toLowerCase().includes(normalizedQuery);
+        return matchesStatus && matchesQuery;
+      }),
+    [memberships, statusFilter, normalizedQuery],
+  );
 
-    return matchesStatus && matchesQuery;
-  });
-
-  const filteredMemberships = memberships.filter((membership) => {
-    const matchesStatus =
-      statusFilter === "Semua" ||
-      (statusFilter === "Aktif" && membership.is_active) ||
-      (statusFilter === "Nonaktif" && !membership.is_active);
-
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      membership.student_name.toLowerCase().includes(normalizedQuery) ||
-      membership.nis.toLowerCase().includes(normalizedQuery) ||
-      membership.class_name.toLowerCase().includes(normalizedQuery) ||
-      membership.school_year_name.toLowerCase().includes(normalizedQuery) ||
-      membership.status.toLowerCase().includes(normalizedQuery);
-
-    return matchesStatus && matchesQuery;
-  });
-
-  const filteredRules = attendanceRules.filter((rule) => {
-    const matchesStatus =
-      statusFilter === "Semua" ||
-      (statusFilter === "Aktif" && rule.is_active) ||
-      (statusFilter === "Nonaktif" && !rule.is_active);
-
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      rule.school_year.toLowerCase().includes(normalizedQuery) ||
-      rule.check_in_start.toLowerCase().includes(normalizedQuery) ||
-      rule.on_time_until.toLowerCase().includes(normalizedQuery) ||
-      rule.late_until.toLowerCase().includes(normalizedQuery);
-
-    return matchesStatus && matchesQuery;
-  });
+  const filteredRules = useMemo(
+    () =>
+      attendanceRules.filter((rule) => {
+        const matchesStatus =
+          statusFilter === "Semua" ||
+          (statusFilter === "Aktif" && rule.is_active) ||
+          (statusFilter === "Nonaktif" && !rule.is_active);
+        const matchesQuery =
+          normalizedQuery.length === 0 ||
+          rule.school_year.toLowerCase().includes(normalizedQuery) ||
+          rule.check_in_start.toLowerCase().includes(normalizedQuery) ||
+          rule.on_time_until.toLowerCase().includes(normalizedQuery) ||
+          rule.late_until.toLowerCase().includes(normalizedQuery);
+        return matchesStatus && matchesQuery;
+      }),
+    [attendanceRules, statusFilter, normalizedQuery],
+  );
 
   const activeStudentCount = students.filter((student) => student.is_active).length;
   const activeMembershipCount = memberships.filter((membership) => membership.is_active).length;

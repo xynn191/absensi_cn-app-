@@ -10,15 +10,37 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { AdminShell } from "@/components/dashboard/admin/admin-shell";
 import { GreetingCard } from "@/components/dashboard/admin/greeting-card";
 import { KpiCard } from "@/components/dashboard/admin/kpi-card";
-import { AttendanceDonutChart } from "@/components/dashboard/admin/attendance-donut-chart";
-import { SemesterAttendanceChart } from "@/components/dashboard/admin/semester-attendance-chart";
-import { ClassPerformanceChart } from "@/components/dashboard/admin/class-performance-chart";
 import { AnnouncementCard } from "@/components/dashboard/admin/announcement-card";
 import { RoleDistributionTable } from "@/components/dashboard/admin/role-distribution-table";
+
+const AttendanceDonutChart = dynamic(
+  () =>
+    import("@/components/dashboard/admin/attendance-donut-chart").then(
+      (m) => ({ default: m.AttendanceDonutChart }),
+    ),
+  { ssr: false },
+);
+
+const SemesterAttendanceChart = dynamic(
+  () =>
+    import("@/components/dashboard/admin/semester-attendance-chart").then(
+      (m) => ({ default: m.SemesterAttendanceChart }),
+    ),
+  { ssr: false },
+);
+
+const ClassPerformanceChart = dynamic(
+  () =>
+    import("@/components/dashboard/admin/class-performance-chart").then(
+      (m) => ({ default: m.ClassPerformanceChart }),
+    ),
+  { ssr: false },
+);
 
 const fallbackDashboard: AdminDashboardData = {
   attendance_percentage: 0,

@@ -5,7 +5,7 @@ import {
   classFilterOptions,
   formatCheckInTime,
   formatFriendlyDate,
-  openAttachment,
+  normalizeAttachmentUrl,
   ReviewStatusPill,
 } from "@/components/dashboard/bk-common";
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
@@ -39,15 +39,15 @@ import {
   FileImage,
   FileSearch,
   GraduationCap,
+  Image as ImageIcon,
   LayoutPanelTop,
-  PencilLine,
   Search,
   ShieldAlert,
   SlidersHorizontal,
   TriangleAlert,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const statusOptions = [
@@ -70,21 +70,28 @@ const reviewStatusOptions = [
 export function BKAttendancePage() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [classFilter, setClassFilter] = useState("Semua");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [reviewTarget, setReviewTarget] = useState<StaffAttendanceRecord | null>(null);
+  const [proofTarget, setProofTarget] = useState<StaffAttendanceRecord | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), 350);
+    return () => clearTimeout(timer);
+  }, [query]);
 
   const dateValue = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
 
   const overviewQuery = useQuery({
-    queryKey: ["bk-attendance-overview", dateValue, statusFilter, classFilter, query],
+    queryKey: ["bk-attendance-overview", dateValue, statusFilter, classFilter, debouncedQuery],
     queryFn: () =>
       getBKAttendanceOverview({
         date: dateValue,
         status: statusFilter === "Semua" ? "" : statusFilter,
         class_id: classFilter === "Semua" ? "" : classFilter,
-        query: query.trim(),
+        query: debouncedQuery.trim(),
       }),
     refetchInterval: 30_000,
     staleTime: 0,
@@ -319,7 +326,7 @@ export function BKAttendancePage() {
                                 size="icon"
                                 className="size-10 rounded-2xl border border-emerald-100 text-emerald-700 hover:border-emerald-200 hover:bg-emerald-50"
                                 disabled={!record.photo_url}
-                                onClick={() => openAttachment(record.photo_url)}
+                                onClick={() => setProofTarget(record)}
                               >
                                 <FileImage className="size-4.5" />
                               </Button>
@@ -330,7 +337,7 @@ export function BKAttendancePage() {
                                 className="size-10 rounded-2xl border border-sky-100 text-sky-700 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
                                 onClick={() => setReviewTarget(record)}
                               >
-                                <PencilLine className="size-4.5" />
+                                <BadgeCheck className="size-4.5" />
                               </Button>
                             </div>
                           </td>
@@ -383,6 +390,12 @@ export function BKAttendancePage() {
               onSubmit={(payload) => reviewMutation.mutate(payload)}
             />
           ) : null}
+          <AttendanceProofModal
+            record={proofTarget}
+            onOpenChange={(open) => {
+              if (!open) setProofTarget(null);
+            }}
+          />
         </>
       )}
     </StaffShell>
@@ -449,7 +462,7 @@ function AttendanceReviewModal({
       onOpenChange={onOpenChange}
       title={record ? `Review ${record.student_name}` : "Review Absensi"}
       description="Perbarui status dan catatan verifikasi dari perspektif BK."
-      icon={PencilLine}
+      icon={BadgeCheck}
       className="sm:!max-w-[760px]"
     >
       <div className="grid gap-5">
@@ -507,6 +520,64 @@ function TableSkeleton() {
         </div>
       ))}
     </div>
+  );
+}
+
+function AttendanceProofModal({
+  record,
+  onOpenChange,
+}: {
+  record: StaffAttendanceRecord | null;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const photoUrl = record?.photo_url ? normalizeAttachmentUrl(record.photo_url) : undefined;
+
+  return (
+    <PremiumModal
+      open={Boolean(record)}
+      onOpenChange={onOpenChange}
+      title={record ? `Bukti ${record.student_name}` : "Bukti Absensi"}
+      description="Preview foto absensi siswa tanpa membuka tab baru."
+      icon={ImageIcon}
+      className="sm:!max-w-[760px]"
+    >
+      {record ? (
+        <div className="grid gap-4">
+          <div className="rounded-[22px] border border-emerald-100/70 bg-white/92 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-1">
+                <p className="text-base font-semibold text-slate-900">{record.student_name}</p>
+                <p className="text-sm text-slate-500">
+                  {record.nis} • {record.class_name}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {formatFriendlyDate(record.attendance_date)} • {formatCheckInTime(record.check_in_at)}
+                </p>
+              </div>
+              <AttendanceStatusPill status={record.status} />
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-[26px] border border-emerald-100/80 bg-[linear-gradient(180deg,#f8fffb_0%,#eefbf4_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]">
+            {photoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={photoUrl}
+                alt={`Bukti absensi ${record.student_name}`}
+                className="max-h-[62vh] w-full rounded-[20px] object-contain"
+              />
+            ) : (
+              <EmptyState
+                icon={ImageIcon}
+                title="Bukti foto belum tersedia"
+                description="Record ini belum memiliki foto absensi yang bisa ditampilkan."
+                compact
+              />
+            )}
+          </div>
+        </div>
+      ) : null}
+    </PremiumModal>
   );
 }
 

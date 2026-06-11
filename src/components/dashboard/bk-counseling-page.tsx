@@ -45,12 +45,13 @@ import {
   UsersRound,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export function BKCounselingPage() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [classFilter, setClassFilter] = useState("Semua");
   const [studentFilter, setStudentFilter] = useState("Semua");
   const [detailTarget, setDetailTarget] = useState<StaffCounselingNote | null>(null);
@@ -58,13 +59,18 @@ export function BKCounselingPage() {
   const [deleteTarget, setDeleteTarget] = useState<StaffCounselingNote | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), 350);
+    return () => clearTimeout(timer);
+  }, [query]);
+
   const overviewQuery = useQuery({
-    queryKey: ["bk-counseling-overview", classFilter, studentFilter, query],
+    queryKey: ["bk-counseling-overview", classFilter, studentFilter, debouncedQuery],
     queryFn: () =>
       getBKCounselingOverview({
         class_id: classFilter === "Semua" ? "" : classFilter,
         student_id: studentFilter === "Semua" ? "" : studentFilter,
-        query: query.trim(),
+        query: debouncedQuery.trim(),
       }),
   });
 

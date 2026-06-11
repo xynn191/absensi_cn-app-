@@ -114,9 +114,9 @@ export function StaffSidebar({
             <button
               type="button"
               onClick={onLogout}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ffd3c1] px-5 text-sm font-semibold text-[#6d3a2d] transition hover:bg-[#ffc7b0]"
+              className="group flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ffd3c1] px-5 text-sm font-semibold text-[#6d3a2d] transition duration-200 hover:scale-[1.03] hover:bg-rose-500 hover:text-white hover:shadow-[0_8px_22px_rgba(225,60,40,0.35)] active:scale-[0.98]"
             >
-              <LogOut className="size-4" />
+              <LogOut className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-rotate-6" />
               Keluar
             </button>
           </div>

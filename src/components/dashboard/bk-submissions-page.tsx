@@ -339,8 +339,8 @@ function SubmissionDetailModal({ submission, onOpenChange }: { submission: Staff
       className="sm:!max-w-[920px]"
     >
       {submission ? (
-        <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-          <div className="grid gap-5">
+        <div className="grid items-start gap-4 lg:grid-cols-[1fr_0.9fr]">
+          <div className="grid gap-4">
             <div className={`${premiumModalSurfaceClassName} p-5`}>
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-xl font-semibold tracking-normal text-slate-950">{submission.student_name}</h3>
@@ -357,47 +357,53 @@ function SubmissionDetailModal({ submission, onOpenChange }: { submission: Staff
               </div>
               <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">{submission.reason}</p>
             </div>
+          </div>
+
+          <div className="grid gap-4">
+            <div className={`${premiumModalSurfaceClassName} p-5`}>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="text-base font-semibold text-slate-900">Lampiran</p>
+                <FileImage className="size-4.5 text-emerald-600" />
+              </div>
+              {submission.attachment ? (
+                isImageAttachment(submission.attachment) ? (
+                  <div className="space-y-3">
+                    <div className="overflow-hidden rounded-[20px] border border-emerald-100 bg-slate-50/80">
+                      <Image
+                        src={normalizeAttachmentUrl(submission.attachment)}
+                        alt={`Lampiran ${submission.student_name}`}
+                        width={720}
+                        height={360}
+                        className="h-[260px] w-full object-cover"
+                        unoptimized
+                      />
+                    </div>
+                    <Button type="button" variant="outline" className="w-full rounded-[16px]" onClick={() => openAttachment(submission.attachment)}>
+                      <ArrowUpRight className="size-4" />
+                      Lihat ukuran penuh
+                    </Button>
+                  </div>
+                ) : (
+                  <Button type="button" variant="outline" className="w-full rounded-[16px]" onClick={() => openAttachment(submission.attachment)}>
+                    <ArrowUpRight className="size-4" />
+                    Buka Lampiran
+                  </Button>
+                )
+              ) : (
+                <EmptyState icon={FileImage} title="Tidak ada lampiran" description="Siswa belum mengunggah bukti pendukung." compact />
+              )}
+            </div>
             <div className={`${premiumModalSurfaceClassName} p-5`}>
               <div className="mb-3 flex items-center justify-between gap-3">
                 <p className="text-base font-semibold text-slate-900">Catatan Review</p>
                 <ShieldCheck className="size-4.5 text-emerald-600" />
               </div>
-              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">{submission.review_note || "Belum ada catatan review."}</p>
-            </div>
-          </div>
-
-          <div className={`${premiumModalSurfaceClassName} p-5`}>
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-base font-semibold text-slate-900">Lampiran</p>
-              <FileImage className="size-4.5 text-emerald-600" />
-            </div>
-            {submission.attachment ? (
-              isImageAttachment(submission.attachment) ? (
-                <div className="space-y-3">
-                  <div className="overflow-hidden rounded-[20px] border border-emerald-100 bg-slate-50/80">
-                    <Image
-                      src={normalizeAttachmentUrl(submission.attachment)}
-                      alt={`Lampiran ${submission.student_name}`}
-                      width={720}
-                      height={360}
-                      className="h-[260px] w-full object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <Button type="button" variant="outline" className="w-full rounded-[16px]" onClick={() => openAttachment(submission.attachment)}>
-                    <ArrowUpRight className="size-4" />
-                    Lihat ukuran penuh
-                  </Button>
-                </div>
+              {submission.review_note ? (
+                <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">{submission.review_note}</p>
               ) : (
-                <Button type="button" variant="outline" className="w-full rounded-[16px]" onClick={() => openAttachment(submission.attachment)}>
-                  <ArrowUpRight className="size-4" />
-                  Buka Lampiran
-                </Button>
-              )
-            ) : (
-              <EmptyState icon={FileImage} title="Tidak ada lampiran" description="Siswa belum mengunggah bukti pendukung." compact />
-            )}
+                <EmptyState icon={ClipboardCheck} title="Belum ada catatan review" description="Catatan BK akan tampil setelah pengajuan ditinjau." compact />
+              )}
+            </div>
           </div>
         </div>
       ) : null}

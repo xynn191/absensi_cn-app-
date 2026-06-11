@@ -15,7 +15,7 @@ import {
 import { Search, ShieldCheck, SlidersHorizontal, Sparkles, LayoutPanelTop, LineChart, BadgeCheck, UserCog, KeyRound, PencilLine, Trash2, FilePenLine, Plus } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import type { AdminUser, AdminUserPayload } from "@/types/admin";
 import {
   type FieldErrors,
@@ -41,6 +41,7 @@ export function AdminManagementSection({
 }: AdminManagementSectionProps) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
@@ -82,14 +83,14 @@ export function AdminManagementSection({
   );
 
   const filteredAdmins = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const normalizedQuery = deferredQuery.trim().toLowerCase();
     return adminUsers.filter(
       (user) =>
         normalizedQuery.length === 0 ||
         user.name.toLowerCase().includes(normalizedQuery) ||
         (user.username ?? "").toLowerCase().includes(normalizedQuery),
     );
-  }, [adminUsers, query]);
+  }, [adminUsers, deferredQuery]);
 
   const kpiCards = [
     {

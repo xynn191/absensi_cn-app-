@@ -91,18 +91,24 @@ const emptyOverview: StaffHomeroomSubmissionOverview = {
 export function WalasSubmissionsPage() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [typeFilter, setTypeFilter] = useState("Semua");
   const [detailTarget, setDetailTarget] = useState<StaffSubmission | null>(null);
   const [reviewTarget, setReviewTarget] = useState<StaffSubmission | null>(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), 350);
+    return () => clearTimeout(timer);
+  }, [query]);
+
   const overviewQuery = useQuery({
-    queryKey: ["teacher-homeroom-submissions-overview", statusFilter, typeFilter, query],
+    queryKey: ["teacher-homeroom-submissions-overview", statusFilter, typeFilter, debouncedQuery],
     queryFn: () =>
       getTeacherHomeroomSubmissionsOverview({
         status: statusFilter === "Semua" ? "" : statusFilter,
         type: typeFilter === "Semua" ? "" : typeFilter,
-        query: query.trim(),
+        query: debouncedQuery.trim(),
       }),
   });
 
@@ -131,10 +137,6 @@ export function WalasSubmissionsPage() {
   const overview = overviewQuery.data ?? emptyOverview;
   const counts = overview.counts;
   const records = overview.records ?? [];
-  const pendingItems = useMemo(
-    () => records.filter((item) => normalizeSubmissionStatus(item.status) === "menunggu").slice(0, 5),
-    [records],
-  );
 
   const kpiCards = [
     {
@@ -395,75 +397,6 @@ export function WalasSubmissionsPage() {
             </motion.div>
           </section>
 
-          <article className="rounded-[30px] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(248,252,250,0.94)_100%)] p-5 shadow-[0_20px_48px_rgba(28,77,61,0.08)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-[1.35rem] font-semibold tracking-[-0.03em] text-slate-950">
-                  Fokus Review
-                </h3>
-                <p className="mt-1 text-sm text-slate-500">
-                  Pengajuan yang masih menunggu respon wali kelas.
-                </p>
-              </div>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                Prioritas
-              </span>
-            </div>
-
-            <div className="mt-5 space-y-3">
-              {pendingItems.length === 0 ? (
-                <EmptyState
-                  icon={ShieldCheck}
-                  title="Tidak ada pengajuan pending"
-                  description="Pengajuan yang belum ditanggapi walas akan tampil di panel ini."
-                  compact
-                />
-              ) : (
-                pendingItems.map((item, index) => (
-                  <motion.article
-                    key={`pending-${item.id}`}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2, delay: index * 0.05 }}
-                    className="rounded-[22px] border border-slate-100 bg-slate-50/92 p-4"
-                  >
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-semibold text-slate-900">{item.student_name}</p>
-                          <SubmissionTypePill type={item.type} />
-                        </div>
-                        <p className="text-sm text-slate-500">
-                          {item.nis} • {item.class_name || "Kelas belum tersambung"}
-                        </p>
-                        <p className="line-clamp-2 text-sm leading-6 text-slate-500">
-                          {item.reason}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 self-end lg:self-center">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="h-11 rounded-[16px] px-4"
-                          onClick={() => setDetailTarget(item)}
-                        >
-                          Detail
-                        </Button>
-                        <Button
-                          type="button"
-                          className="h-11 rounded-[16px] bg-emerald-700 px-4 text-white hover:bg-emerald-800"
-                          onClick={() => setReviewTarget(item)}
-                        >
-                          Review
-                        </Button>
-                      </div>
-                    </div>
-                  </motion.article>
-                ))
-              )}
-            </div>
-          </article>
-
           <SubmissionDetailModal
             submission={detailTarget}
             onOpenChange={(open) => {
@@ -506,8 +439,8 @@ function SubmissionDetailModal({
       className="sm:!max-w-[920px]"
     >
       {submission ? (
-        <div className="grid gap-5">
-          <div className="grid items-start gap-4 lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="grid items-start gap-4 lg:grid-cols-[1.08fr_0.92fr]">
+          <div className="grid gap-4">
             <div className={`${premiumModalSurfaceClassName} p-5`}>
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="space-y-2">
@@ -543,6 +476,21 @@ function SubmissionDetailModal({
               </div>
             </div>
 
+            <div className={`${premiumModalSurfaceClassName} p-5`}>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-base font-semibold text-slate-900">Alasan Pengajuan</p>
+                  <p className="text-sm text-slate-500">Pesan asli yang dikirim siswa</p>
+                </div>
+                <ClipboardCheck className="size-4.5 text-emerald-600" />
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">
+                {submission.reason}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
             <div className={`${premiumModalSurfaceClassName} p-5`}>
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
@@ -598,21 +546,6 @@ function SubmissionDetailModal({
                   compact
                 />
               )}
-            </div>
-          </div>
-
-          <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-            <div className={`${premiumModalSurfaceClassName} p-5`}>
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-base font-semibold text-slate-900">Alasan Pengajuan</p>
-                  <p className="text-sm text-slate-500">Pesan asli yang dikirim siswa</p>
-                </div>
-                <ClipboardCheck className="size-4.5 text-emerald-600" />
-              </div>
-              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">
-                {submission.reason}
-              </p>
             </div>
 
             <div className={`${premiumModalSurfaceClassName} p-5`}>

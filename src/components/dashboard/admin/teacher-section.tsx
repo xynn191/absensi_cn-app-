@@ -72,7 +72,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 
@@ -106,6 +106,7 @@ export function TeacherSection({
 }: TeacherSectionProps) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [activeTab, setActiveTab] = useState<TeacherTab>("profiles");
   const [profileModalOpen, setProfileModalOpen] = useState(false);
@@ -309,7 +310,7 @@ export function TeacherSection({
     [usersQuery.data],
   );
 
-  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedQuery = deferredQuery.trim().toLowerCase();
 
   const subjectAssignmentsByTeacher = useMemo(() => {
     return teacherSubjectAssignments.reduce<Record<string, number>>(
@@ -333,39 +334,49 @@ export function TeacherSection({
     );
   }, [homeroomAssignments]);
 
-  const filteredTeacherProfiles = teacherProfiles.filter((teacher) => {
-    const matchesStatus =
-      statusFilter === "Semua" ||
-      (statusFilter === "Aktif" && teacher.is_active) ||
-      (statusFilter === "Nonaktif" && !teacher.is_active);
-
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      teacher.name.toLowerCase().includes(normalizedQuery) ||
-      (teacher.username ?? "").toLowerCase().includes(normalizedQuery) ||
-      (teacher.nip ?? "").toLowerCase().includes(normalizedQuery) ||
-      (teacher.nuptk ?? "").toLowerCase().includes(normalizedQuery) ||
-      (teacher.phone ?? "").toLowerCase().includes(normalizedQuery);
-
-    return matchesStatus && matchesQuery;
-  });
-
-  const filteredTeacherSubjectAssignments = teacherSubjectAssignments.filter(
-    (assignment) =>
-      normalizedQuery.length === 0 ||
-      assignment.teacher_name.toLowerCase().includes(normalizedQuery) ||
-      assignment.subject_code.toLowerCase().includes(normalizedQuery) ||
-      assignment.subject_name.toLowerCase().includes(normalizedQuery) ||
-      assignment.class_name.toLowerCase().includes(normalizedQuery) ||
-      assignment.school_year_name.toLowerCase().includes(normalizedQuery),
+  const filteredTeacherProfiles = useMemo(
+    () =>
+      teacherProfiles.filter((teacher) => {
+        const matchesStatus =
+          statusFilter === "Semua" ||
+          (statusFilter === "Aktif" && teacher.is_active) ||
+          (statusFilter === "Nonaktif" && !teacher.is_active);
+        const matchesQuery =
+          normalizedQuery.length === 0 ||
+          teacher.name.toLowerCase().includes(normalizedQuery) ||
+          (teacher.username ?? "").toLowerCase().includes(normalizedQuery) ||
+          (teacher.nip ?? "").toLowerCase().includes(normalizedQuery) ||
+          (teacher.nuptk ?? "").toLowerCase().includes(normalizedQuery) ||
+          (teacher.phone ?? "").toLowerCase().includes(normalizedQuery);
+        return matchesStatus && matchesQuery;
+      }),
+    [teacherProfiles, statusFilter, normalizedQuery],
   );
 
-  const filteredHomeroomAssignments = homeroomAssignments.filter(
-    (assignment) =>
-      normalizedQuery.length === 0 ||
-      assignment.teacher_name.toLowerCase().includes(normalizedQuery) ||
-      assignment.class_name.toLowerCase().includes(normalizedQuery) ||
-      assignment.school_year_name.toLowerCase().includes(normalizedQuery),
+  const filteredTeacherSubjectAssignments = useMemo(
+    () =>
+      teacherSubjectAssignments.filter(
+        (assignment) =>
+          normalizedQuery.length === 0 ||
+          assignment.teacher_name.toLowerCase().includes(normalizedQuery) ||
+          assignment.subject_code.toLowerCase().includes(normalizedQuery) ||
+          assignment.subject_name.toLowerCase().includes(normalizedQuery) ||
+          assignment.class_name.toLowerCase().includes(normalizedQuery) ||
+          assignment.school_year_name.toLowerCase().includes(normalizedQuery),
+      ),
+    [teacherSubjectAssignments, normalizedQuery],
+  );
+
+  const filteredHomeroomAssignments = useMemo(
+    () =>
+      homeroomAssignments.filter(
+        (assignment) =>
+          normalizedQuery.length === 0 ||
+          assignment.teacher_name.toLowerCase().includes(normalizedQuery) ||
+          assignment.class_name.toLowerCase().includes(normalizedQuery) ||
+          assignment.school_year_name.toLowerCase().includes(normalizedQuery),
+      ),
+    [homeroomAssignments, normalizedQuery],
   );
 
   const activeTeacherCount = teacherProfiles.filter(
@@ -629,14 +640,14 @@ export function TeacherSection({
                 className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full"
               >
                 <BookOpen className="size-4" />
-                Assignment Mapel
+                Penempatan Mapel
               </TabsTrigger>
               <TabsTrigger
                 value="homerooms"
                 className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full"
               >
                 <GraduationCap className="size-4" />
-                Assignment Walas
+                Penempatan Walas
               </TabsTrigger>
             </TabsList>
           </ScrollableTabsWrapper>
