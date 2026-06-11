@@ -1,6 +1,7 @@
 "use client";
 
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
+import { ScrollableTabsWrapper } from "@/components/dashboard/admin/scrollable-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmationModal } from "@/components/ui/delete-confirmation-modal";
@@ -614,8 +615,7 @@ export function TeacherSection({
           onValueChange={(value) => setActiveTab(value as TeacherTab)}
           className="mt-5 gap-4"
         >
-          <div className="relative">
-            <div className="overflow-x-scroll pb-2.5 [&::-webkit-scrollbar]:h-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-emerald-100 xl:overflow-visible xl:pb-0">
+          <ScrollableTabsWrapper>
             <TabsList className="flex min-w-max gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] xl:min-w-0 xl:grid xl:w-full xl:grid-cols-3">
               <TabsTrigger
                 value="profiles"
@@ -639,14 +639,13 @@ export function TeacherSection({
                 Assignment Walas
               </TabsTrigger>
             </TabsList>
-            </div>
-            <div className="pointer-events-none absolute right-0 top-0 h-[calc(100%-10px)] w-28 bg-gradient-to-l from-white via-white/75 to-transparent xl:hidden" />
-          </div>
+          </ScrollableTabsWrapper>
 
           <TabsContent value="profiles" className="mt-4">
             <DataTableCard
               isLoading={isLoading}
               columnCount={8}
+              isEmpty={filteredTeacherProfiles.length === 0}
               emptyTitle="Belum ada profil guru"
               emptyDescription="Tambahkan akun dengan role TEACHER lalu buat teacher profile agar data muncul di sini."
               icon={UsersRound}
@@ -674,15 +673,7 @@ export function TeacherSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading && filteredTeacherProfiles.length === 0 ? (
-                    <EmptyRow
-                      colSpan={8}
-                      icon={UsersRound}
-                      title="Profil guru tidak ditemukan"
-                      description="Coba ubah pencarian atau filter status guru."
-                    />
-                  ) : (
-                    filteredTeacherProfiles.map((teacher) => (
+                  {filteredTeacherProfiles.map((teacher) => (
                       <tr
                         key={teacher.id}
                         className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30"
@@ -739,7 +730,7 @@ export function TeacherSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
             </DataTableCard>
@@ -749,6 +740,7 @@ export function TeacherSection({
             <DataTableCard
               isLoading={isLoading}
               columnCount={7}
+              isEmpty={filteredTeacherSubjectAssignments.length === 0}
               emptyTitle="Belum ada assignment mapel"
               emptyDescription="Relasi guru ke mapel dan kelas per tahun ajaran akan tampil di tabel ini."
               icon={BookOpen}
@@ -775,15 +767,7 @@ export function TeacherSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading && filteredTeacherSubjectAssignments.length === 0 ? (
-                    <EmptyRow
-                      colSpan={7}
-                      icon={BookOpen}
-                      title="Assignment mapel tidak ditemukan"
-                      description="Belum ada data yang cocok dengan pencarian saat ini."
-                    />
-                  ) : (
-                    filteredTeacherSubjectAssignments.map((assignment) => (
+                  {filteredTeacherSubjectAssignments.map((assignment) => (
                       <tr
                         key={assignment.id}
                         className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30"
@@ -820,7 +804,7 @@ export function TeacherSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
             </DataTableCard>
@@ -830,6 +814,7 @@ export function TeacherSection({
             <DataTableCard
               isLoading={isLoading}
               columnCount={6}
+              isEmpty={filteredHomeroomAssignments.length === 0}
               emptyTitle="Belum ada assignment walas"
               emptyDescription="Data wali kelas per tahun ajaran akan tampil di sini."
               icon={GraduationCap}
@@ -855,15 +840,7 @@ export function TeacherSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading && filteredHomeroomAssignments.length === 0 ? (
-                    <EmptyRow
-                      colSpan={6}
-                      icon={GraduationCap}
-                      title="Assignment walas tidak ditemukan"
-                      description="Belum ada data yang cocok dengan pencarian saat ini."
-                    />
-                  ) : (
-                    filteredHomeroomAssignments.map((assignment) => (
+                  {filteredHomeroomAssignments.map((assignment) => (
                       <tr
                         key={assignment.id}
                         className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30"
@@ -892,7 +869,7 @@ export function TeacherSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
             </DataTableCard>
@@ -1836,6 +1813,7 @@ function DataTableCard({
   emptyDescription,
   isLoading,
   columnCount,
+  isEmpty,
 }: {
   children: ReactNode;
   icon: LucideIcon;
@@ -1843,6 +1821,7 @@ function DataTableCard({
   emptyDescription: string;
   isLoading: boolean;
   columnCount: number;
+  isEmpty: boolean;
 }) {
   return (
     <motion.div
@@ -1851,19 +1830,19 @@ function DataTableCard({
       transition={{ duration: 0.28, delay: 0.08, ease: "easeOut" }}
       className="overflow-hidden rounded-[24px] border border-emerald-100/80"
     >
-      <div className="overflow-x-auto">
-        {isLoading ? <LoadingTable columnCount={columnCount} /> : children}
-      </div>
-      {!isLoading && columnCount === 0 ? (
-        <div className="p-5">
-          <EmptyState
-            icon={icon}
-            title={emptyTitle}
-            description={emptyDescription}
-            compact
-          />
+      {isLoading ? (
+        <div className="overflow-x-auto">
+          <LoadingTable columnCount={columnCount} />
         </div>
-      ) : null}
+      ) : isEmpty ? (
+        <div className="p-5">
+          <EmptyState icon={icon} title={emptyTitle} description={emptyDescription} compact />
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          {children}
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -2019,8 +1998,8 @@ function validateTeacherProfileForm(
   validateMinLength(errors, "password", form.password, 6, isEdit ? "Password baru" : "Password login", {
     allowEmpty: isEdit,
   });
-  validateRequired(errors, "nip", form.nip, "NIP");
-  validateRequired(errors, "nuptk", form.nuptk, "NUPTK");
+  if (!isEdit) validateRequired(errors, "nip", form.nip, "NIP");
+  if (!isEdit) validateRequired(errors, "nuptk", form.nuptk, "NUPTK");
   validateRequired(errors, "gender", form.gender, "Jenis kelamin");
   validatePhone(errors, "phone", form.phone, "Telepon", { allowEmpty: true });
   return errors;

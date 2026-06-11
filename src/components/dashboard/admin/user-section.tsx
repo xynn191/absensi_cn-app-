@@ -1,6 +1,7 @@
 "use client";
 
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
+import { ScrollableTabsWrapper } from "@/components/dashboard/admin/scrollable-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmationModal } from "@/components/ui/delete-confirmation-modal";
@@ -242,8 +243,7 @@ export function UserSection({
         ) : null}
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as UserTab)} className="mt-5 gap-4">
-          <div className="relative">
-            <div className="overflow-x-scroll pb-2.5 [&::-webkit-scrollbar]:h-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-emerald-100 xl:overflow-visible xl:pb-0">
+          <ScrollableTabsWrapper>
             <TabsList className="flex min-w-max gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] xl:min-w-0 xl:grid xl:w-full xl:grid-cols-4">
               <TabsTrigger value="all" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
                 <UsersRound className="size-4" />
@@ -262,13 +262,11 @@ export function UserSection({
                 Guru
               </TabsTrigger>
             </TabsList>
-            </div>
-            <div className="pointer-events-none absolute right-0 top-0 h-[calc(100%-10px)] w-28 bg-gradient-to-l from-white via-white/75 to-transparent xl:hidden" />
-          </div>
+          </ScrollableTabsWrapper>
 
         {(["all", "admins", "bk", "teachers"] as UserTab[]).map((tab) => (
           <TabsContent key={tab} value={tab} className="mt-4">
-              <UserDataTableCard isLoading={isLoading} columnCount={6} emptyTitle="Belum ada role staff" emptyDescription="Tambahkan akun baru untuk admin, BK, atau guru dari section ini." icon={ShieldCheck}>
+              <UserDataTableCard isLoading={isLoading} columnCount={6} isEmpty={filteredUsers.length === 0} emptyTitle="Belum ada role staff" emptyDescription="Tambahkan akun baru untuk admin, BK, atau guru dari section ini." icon={ShieldCheck}>
                 <table className="min-w-full border-separate border-spacing-0 text-left">
                   <thead>
                     <tr className="bg-[#f3fbf6] text-sm text-slate-700">
@@ -280,10 +278,7 @@ export function UserSection({
                     </tr>
                   </thead>
                   <tbody>
-                    {!isLoading && filteredUsers.length === 0 ? (
-                      <UserEmptyRow colSpan={6} icon={ShieldCheck} title="Role staff tidak ditemukan" description="Coba ubah tab atau kata kunci pencarian akun staff." />
-                    ) : (
-                      filteredUsers.map((user) => (
+                    {filteredUsers.map((user) => (
                         <tr key={user.id} className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30">
                           <td className="border-t border-slate-100 px-4 py-4">
                             <div className="flex items-center gap-3">
@@ -325,7 +320,7 @@ export function UserSection({
                           </td>
                         </tr>
                       ))
-                    )}
+                    }
                   </tbody>
                 </table>
               </UserDataTableCard>
@@ -528,6 +523,7 @@ function UserDataTableCard({
   emptyDescription,
   isLoading,
   columnCount,
+  isEmpty,
 }: {
   children: ReactNode;
   icon: LucideIcon;
@@ -535,6 +531,7 @@ function UserDataTableCard({
   emptyDescription: string;
   isLoading: boolean;
   columnCount: number;
+  isEmpty: boolean;
 }) {
   return (
     <motion.div
@@ -543,12 +540,15 @@ function UserDataTableCard({
       transition={{ duration: 0.28, delay: 0.08, ease: "easeOut" }}
       className="overflow-hidden rounded-[24px] border border-emerald-100/80"
     >
-      <div className="overflow-x-auto">{isLoading ? <UserLoadingTable columnCount={columnCount} /> : children}</div>
-      {!isLoading && columnCount === 0 ? (
+      {isLoading ? (
+        <div className="overflow-x-auto"><UserLoadingTable columnCount={columnCount} /></div>
+      ) : isEmpty ? (
         <div className="p-5">
           <EmptyState icon={icon} title={emptyTitle} description={emptyDescription} compact />
         </div>
-      ) : null}
+      ) : (
+        <div className="overflow-x-auto">{children}</div>
+      )}
     </motion.div>
   );
 }

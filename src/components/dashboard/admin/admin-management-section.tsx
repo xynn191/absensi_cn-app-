@@ -209,10 +209,16 @@ export function AdminManagementSection({
           transition={{ duration: 0.28, delay: 0.08, ease: "easeOut" }}
           className="mt-5 overflow-hidden rounded-[24px] border border-emerald-100/80"
         >
-          <div className="overflow-x-auto">
-            {isLoading ? (
+          {isLoading ? (
+            <div className="overflow-x-auto">
               <AdminLoadingTable columnCount={5} />
-            ) : (
+            </div>
+          ) : filteredAdmins.length === 0 ? (
+            <div className="p-5">
+              <EmptyState icon={ShieldCheck} title="Akun admin tidak ditemukan" description="Coba ubah pencarian atau tambahkan akun administrator baru." compact />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
               <table className="min-w-full border-separate border-spacing-0 text-left">
                 <thead>
                   <tr className="bg-[#f3fbf6] text-sm text-slate-700">
@@ -224,14 +230,7 @@ export function AdminManagementSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAdmins.length === 0 ? (
-                    <tr className="bg-white">
-                      <td colSpan={5} className="p-5">
-                        <EmptyState icon={ShieldCheck} title="Akun admin tidak ditemukan" description="Coba ubah pencarian atau tambahkan akun administrator baru." compact />
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredAdmins.map((user) => (
+                    {filteredAdmins.map((user) => (
                       <tr key={user.id} className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30">
                         <td className="border-t border-slate-100 px-4 py-4">
                           <div className="flex items-center gap-3">
@@ -274,11 +273,11 @@ export function AdminManagementSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
-            )}
-          </div>
+            </div>
+          )}
         </motion.div>
       </section>
 

@@ -83,8 +83,13 @@ export function LoginForm({ portal }: LoginFormProps) {
               id="nis"
               icon={UserRound}
               inputMode="numeric"
+              maxLength={10}
               placeholder="Masukkan NIS"
               {...form.register("nis")}
+              onChange={(e) => {
+                const filtered = e.target.value.replace(/\D/g, "").slice(0, 10);
+                form.setValue("nis", filtered, { shouldValidate: !!form.formState.errors.nis });
+              }}
             />
             {form.formState.errors.nis ? (
               <p className="text-sm text-rose-600">

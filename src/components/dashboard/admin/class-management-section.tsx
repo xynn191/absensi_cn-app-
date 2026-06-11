@@ -278,10 +278,21 @@ export function ClassManagementSection({
           transition={{ duration: 0.28, delay: 0.08, ease: "easeOut" }}
           className="mt-5 overflow-hidden rounded-[24px] border border-emerald-100/80"
         >
-          <div className="overflow-x-auto">
-            {isLoading ? (
+          {isLoading ? (
+            <div className="overflow-x-auto">
               <ClassLoadingTable columnCount={8} />
-            ) : (
+            </div>
+          ) : filteredClasses.length === 0 ? (
+            <div className="p-5">
+              <EmptyState
+                icon={Building2}
+                title="Kelas tidak ditemukan"
+                description="Coba ubah pencarian, filter status, atau tambahkan kelas baru."
+                compact
+              />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
               <table className="min-w-full border-separate border-spacing-0 text-left">
                 <thead>
                   <tr className="bg-[#f3fbf6] text-sm text-slate-700">
@@ -296,19 +307,7 @@ export function ClassManagementSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredClasses.length === 0 ? (
-                    <tr className="bg-white">
-                      <td colSpan={8} className="p-5">
-                        <EmptyState
-                          icon={Building2}
-                          title="Kelas tidak ditemukan"
-                          description="Coba ubah pencarian, filter status, atau tambahkan kelas baru."
-                          compact
-                        />
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredClasses.map((item) => (
+                    {filteredClasses.map((item) => (
                       <tr key={item.id} className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30">
                         <td className="border-t border-slate-100 px-4 py-4">
                           <div className="flex items-center gap-3">
@@ -366,11 +365,11 @@ export function ClassManagementSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
-            )}
-          </div>
+            </div>
+          )}
         </motion.div>
       </section>
 

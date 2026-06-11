@@ -287,28 +287,24 @@ export function StudentDashboardPage() {
             <KpiCard
               label="Total Absen"
               value={String(stats?.total_attendance ?? 0)}
-              subtitle="Riwayat tersimpan"
               icon={History}
               accentClass="bg-emerald-100 text-emerald-700"
             />
             <KpiCard
               label="Hadir"
               value={String(stats?.present ?? 0)}
-              subtitle="Tepat waktu"
               icon={CheckCircle2}
               accentClass="bg-sky-100 text-sky-700"
             />
             <KpiCard
               label="Terlambat"
               value={String(stats?.late ?? 0)}
-              subtitle="Perlu disiplin"
               icon={Clock}
               accentClass="bg-amber-100 text-amber-700"
             />
             <KpiCard
               label="Pengajuan"
               value={String(stats?.pending_requests ?? 0)}
-              subtitle="Menunggu review"
               icon={FileText}
               accentClass="bg-rose-100 text-rose-700"
             />

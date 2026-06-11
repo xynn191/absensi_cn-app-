@@ -127,28 +127,24 @@ export function StudentHistoryPage() {
               <KpiCard
                 label="Total Record"
                 value={String(stats?.total_attendance ?? 0)}
-                subtitle="Absensi tercatat"
                 icon={CalendarCheck}
                 accentClass="bg-emerald-100 text-emerald-700"
               />
               <KpiCard
                 label="Hadir"
                 value={String(stats?.present ?? 0)}
-                subtitle="Tepat waktu"
                 icon={CheckCircle2}
                 accentClass="bg-sky-100 text-sky-700"
               />
               <KpiCard
                 label="Telat Alfa"
                 value={String((stats?.late ?? 0) + (stats?.alpha ?? 0))}
-                subtitle="Perlu perhatian"
                 icon={ShieldAlert}
                 accentClass="bg-amber-100 text-amber-700"
               />
               <KpiCard
                 label="Izin Sakit"
                 value={String((stats?.permission ?? 0) + (stats?.sick ?? 0))}
-                subtitle="Ada bukti"
                 icon={FileText}
                 accentClass="bg-rose-100 text-rose-700"
               />
@@ -183,33 +179,34 @@ export function StudentHistoryPage() {
               </div>
             </div>
 
-            <div className="mt-5 overflow-hidden rounded-[1.45rem] border border-emerald-100">
-              <div className="grid grid-cols-[1fr_0.72fr_0.62fr_0.84fr_0.4fr] gap-4 bg-emerald-50 px-5 py-4 text-sm font-semibold text-slate-700">
-                <span>Aktivitas</span>
-                <span>Waktu</span>
-                <span>Status</span>
-                <span>Validasi</span>
-                <span className="text-center">Bukti</span>
-              </div>
-
-              {records.length > 0 ? (
-                records.map((item) =>
-                  item.kind === "attendance" ? (
-                    <AttendanceRow key={item.id} record={item.record} />
-                  ) : (
-                    <SubmissionRow key={item.id} submission={item.submission} />
-                  ),
-                )
-              ) : (
-                <div className="p-5">
-                  <EmptyState
-                    icon={History}
-                    title="Histori belum ditemukan"
-                    description="Coba ubah filter atau lakukan absensi terlebih dahulu."
-                  />
+            {records.length > 0 ? (
+              <div className="mt-5 overflow-x-auto rounded-[1.45rem] border border-emerald-100">
+                <div className="min-w-[560px]">
+                  <div className="grid grid-cols-[1fr_0.72fr_0.62fr_0.84fr_0.4fr] gap-4 bg-emerald-50 px-5 py-4 text-sm font-semibold text-slate-700">
+                    <span>Aktivitas</span>
+                    <span>Waktu</span>
+                    <span>Status</span>
+                    <span>Validasi</span>
+                    <span className="text-center">Bukti</span>
+                  </div>
+                  {records.map((item) =>
+                    item.kind === "attendance" ? (
+                      <AttendanceRow key={item.id} record={item.record} />
+                    ) : (
+                      <SubmissionRow key={item.id} submission={item.submission} />
+                    ),
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="mt-5 rounded-[1.45rem] border border-emerald-100 p-5">
+                <EmptyState
+                  icon={History}
+                  title="Histori belum ditemukan"
+                  description="Coba ubah filter atau lakukan absensi terlebih dahulu."
+                />
+              </div>
+            )}
           </motion.section>
         </div>
       )}

@@ -24,7 +24,7 @@ export function StaffTopbar({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, ease: "easeOut" }}
-      className="rounded-[24px] border border-white/70 bg-white/75 p-3 shadow-[0_20px_55px_rgba(153,161,179,0.12)] backdrop-blur-xl sm:rounded-[30px] sm:p-4"
+      className="sticky top-3 z-50 rounded-[24px] border border-white/70 bg-white/75 p-3 shadow-[0_20px_55px_rgba(153,161,179,0.12)] backdrop-blur-xl sm:top-4 sm:rounded-[30px] sm:p-4"
     >
       <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -35,10 +35,12 @@ export function StaffTopbar({
           >
             <Menu className="size-4" />
           </button>
+
           <div className="min-w-0">
             <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700/80 sm:text-xs sm:tracking-[0.22em]">
               {eyebrow}
             </p>
+
             <h1 className="mt-0.5 truncate text-[1.15rem] font-semibold tracking-[-0.04em] text-slate-900 sm:mt-1 sm:text-[1.7rem]">
               {title}
             </h1>
@@ -57,11 +59,15 @@ export function StaffTopbar({
                 style={{ width: "auto", height: "auto" }}
               />
             </div>
+
             <div className="min-w-0 pr-1 sm:pr-2">
               <p className="truncate text-xs font-semibold text-slate-900 sm:text-sm">
                 {userName}
               </p>
-              <p className="truncate text-xs text-slate-500 sm:text-sm">{userLabel}</p>
+
+              <p className="truncate text-xs text-slate-500 sm:text-sm">
+                {userLabel}
+              </p>
             </div>
           </div>
         </div>

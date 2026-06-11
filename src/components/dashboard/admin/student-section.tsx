@@ -1,6 +1,7 @@
 "use client";
 
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
+import { ScrollableTabsWrapper } from "@/components/dashboard/admin/scrollable-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -525,8 +526,7 @@ export function StudentSection({
         ) : null}
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as StudentTab)} className="mt-5 gap-4">
-          <div className="relative">
-            <div className="overflow-x-scroll pb-2.5 [&::-webkit-scrollbar]:h-[3px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-emerald-100 xl:overflow-visible xl:pb-0">
+          <ScrollableTabsWrapper>
               <TabsList className="flex min-w-max gap-2 rounded-[24px] border border-emerald-100/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(242,250,246,0.92)_100%)] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_16px_30px_rgba(15,23,42,0.04)] xl:min-w-0 xl:grid xl:w-full xl:grid-cols-3">
                 <TabsTrigger value="profiles" className="shrink-0 rounded-[18px] border border-slate-200/40 bg-white/50 px-5 py-3 text-slate-500 transition-colors hover:border-emerald-100 hover:bg-white/80 hover:text-emerald-800 data-active:border-emerald-200 data-active:bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(236,253,245,0.98)_100%)] data-active:text-emerald-900 data-active:shadow-[0_14px_26px_rgba(16,185,129,0.12)] xl:w-full">
                   <UsersRound className="size-4" />
@@ -541,12 +541,10 @@ export function StudentSection({
                   Aturan Absensi
                 </TabsTrigger>
               </TabsList>
-            </div>
-            <div className="pointer-events-none absolute right-0 top-0 h-[calc(100%-10px)] w-28 bg-gradient-to-l from-white via-white/75 to-transparent xl:hidden" />
-          </div>
+          </ScrollableTabsWrapper>
 
           <TabsContent value="profiles" className="mt-4">
-            <StudentDataTableCard isLoading={isLoading} columnCount={9} emptyTitle="Belum ada siswa" emptyDescription="Tambahkan siswa baru agar data muncul pada daftar ini." icon={UsersRound}>
+            <StudentDataTableCard isLoading={isLoading} columnCount={9} isEmpty={filteredStudents.length === 0} emptyTitle="Belum ada siswa" emptyDescription="Tambahkan siswa baru agar data muncul pada daftar ini." icon={UsersRound}>
               <table className="min-w-full border-separate border-spacing-0 text-left">
                 <thead>
                   <tr className="bg-[#f3fbf6] text-sm text-slate-700">
@@ -558,10 +556,7 @@ export function StudentSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading && filteredStudents.length === 0 ? (
-                    <StudentEmptyRow colSpan={9} icon={UsersRound} title="Profil siswa tidak ditemukan" description="Coba ubah pencarian atau filter status siswa." />
-                  ) : (
-                    filteredStudents.map((student) => (
+                  {filteredStudents.map((student) => (
                       <tr key={student.id} className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30">
                         <td className="border-t border-slate-100 px-4 py-4">
                           <div className="flex items-center gap-3">
@@ -607,14 +602,14 @@ export function StudentSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
             </StudentDataTableCard>
           </TabsContent>
 
           <TabsContent value="memberships" className="mt-4">
-            <StudentDataTableCard isLoading={isLoading} columnCount={6} emptyTitle="Belum ada penempatan kelas" emptyDescription="Riwayat kelas siswa per tahun ajaran akan tampil di sini." icon={GraduationCap}>
+            <StudentDataTableCard isLoading={isLoading} columnCount={6} isEmpty={filteredMemberships.length === 0} emptyTitle="Belum ada penempatan kelas" emptyDescription="Riwayat kelas siswa per tahun ajaran akan tampil di sini." icon={GraduationCap}>
               <table className="min-w-full border-separate border-spacing-0 text-left">
                 <thead>
                   <tr className="bg-[#f3fbf6] text-sm text-slate-700">
@@ -626,10 +621,7 @@ export function StudentSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading && filteredMemberships.length === 0 ? (
-                    <StudentEmptyRow colSpan={6} icon={GraduationCap} title="Penempatan kelas tidak ditemukan" description="Belum ada data penempatan yang cocok dengan filter saat ini." />
-                  ) : (
-                    filteredMemberships.map((membership) => (
+                  {filteredMemberships.map((membership) => (
                       <tr key={membership.id} className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30">
                         <td className="border-t border-slate-100 px-4 py-4">
                           <div className="space-y-1">
@@ -657,14 +649,14 @@ export function StudentSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
             </StudentDataTableCard>
           </TabsContent>
 
           <TabsContent value="rules" className="mt-4">
-            <StudentDataTableCard isLoading={isLoading} columnCount={6} emptyTitle="Belum ada aturan absensi" emptyDescription="Rule jam hadir, telat, dan cutoff alfa akan muncul di tabel ini." icon={TimerReset}>
+            <StudentDataTableCard isLoading={isLoading} columnCount={6} isEmpty={filteredRules.length === 0} emptyTitle="Belum ada aturan absensi" emptyDescription="Rule jam hadir, telat, dan cutoff alfa akan muncul di tabel ini." icon={TimerReset}>
               <table className="min-w-full border-separate border-spacing-0 text-left">
                 <thead>
                   <tr className="bg-[#f3fbf6] text-sm text-slate-700">
@@ -676,10 +668,7 @@ export function StudentSection({
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading && filteredRules.length === 0 ? (
-                    <StudentEmptyRow colSpan={6} icon={TimerReset} title="Aturan absensi tidak ditemukan" description="Tambahkan aturan absensi baru agar school year punya window check-in." />
-                  ) : (
-                    filteredRules.map((rule) => (
+                  {filteredRules.map((rule) => (
                       <tr key={rule.id} className="bg-white text-sm text-slate-600 transition hover:bg-emerald-50/30">
                         <td className="border-t border-slate-100 px-4 py-4">{rule.school_year}</td>
                         <td className="border-t border-slate-100 px-4 py-4">{rule.check_in_start}</td>
@@ -697,7 +686,7 @@ export function StudentSection({
                         </td>
                       </tr>
                     ))
-                  )}
+                  }
                 </tbody>
               </table>
             </StudentDataTableCard>
@@ -1429,6 +1418,7 @@ function StudentDataTableCard({
   emptyDescription,
   isLoading,
   columnCount,
+  isEmpty,
 }: {
   children: ReactNode;
   icon: LucideIcon;
@@ -1436,6 +1426,7 @@ function StudentDataTableCard({
   emptyDescription: string;
   isLoading: boolean;
   columnCount: number;
+  isEmpty: boolean;
 }) {
   return (
     <motion.div
@@ -1444,12 +1435,15 @@ function StudentDataTableCard({
       transition={{ duration: 0.28, delay: 0.08, ease: "easeOut" }}
       className="overflow-hidden rounded-[24px] border border-emerald-100/80"
     >
-      <div className="overflow-x-auto">{isLoading ? <LoadingTable columnCount={columnCount} /> : children}</div>
-      {!isLoading && columnCount === 0 ? (
+      {isLoading ? (
+        <div className="overflow-x-auto"><LoadingTable columnCount={columnCount} /></div>
+      ) : isEmpty ? (
         <div className="p-5">
           <EmptyState icon={icon} title={emptyTitle} description={emptyDescription} compact />
         </div>
-      ) : null}
+      ) : (
+        <div className="overflow-x-auto">{children}</div>
+      )}
     </motion.div>
   );
 }

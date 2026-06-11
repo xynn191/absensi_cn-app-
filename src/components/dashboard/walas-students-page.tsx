@@ -234,10 +234,21 @@ export function WalasStudentsPage() {
               transition={{ duration: 0.28, delay: 0.08, ease: "easeOut" }}
               className="mt-5 overflow-hidden rounded-[24px] border border-emerald-100/80"
             >
-              <div className="overflow-x-auto">
-                {studentsQuery.isLoading || homeroomQuery.isLoading ? (
+              {studentsQuery.isLoading || homeroomQuery.isLoading ? (
+                <div className="overflow-x-auto">
                   <LoadingTable columnCount={8} />
-                ) : (
+                </div>
+              ) : filteredStudents.length === 0 ? (
+                <div className="p-5">
+                  <EmptyState
+                    icon={UsersRound}
+                    title="Belum ada siswa yang cocok"
+                    description="Coba ubah pencarian atau filter untuk melihat daftar siswa kelas walas."
+                    compact
+                  />
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead className="bg-[linear-gradient(180deg,#eef8f2_0%,#e5f4eb_100%)] text-left text-slate-700">
                       <tr>
@@ -252,19 +263,7 @@ export function WalasStudentsPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-emerald-50 bg-white/92">
-                      {filteredStudents.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="p-5">
-                            <EmptyState
-                              icon={UsersRound}
-                              title="Belum ada siswa yang cocok"
-                              description="Coba ubah pencarian atau filter untuk melihat daftar siswa kelas walas."
-                              compact
-                            />
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredStudents.map((student) => (
+                        {filteredStudents.map((student) => (
                           <tr key={student.id} className="transition-colors hover:bg-emerald-50/45">
                             <td className="px-5 py-4">
                               <div className="flex items-center gap-3">
@@ -323,13 +322,12 @@ export function WalasStudentsPage() {
                                 </Button>
                               </div>
                             </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
+                                                </tr>
+                        ))}
+                                      </tbody>
                   </table>
-                )}
-              </div>
+                </div>
+              )}
             </motion.div>
           </section>
 
