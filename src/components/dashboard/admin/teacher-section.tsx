@@ -34,6 +34,7 @@ import {
   updateAdminTeacherSubjectAssignment,
   updateAdminUser,
 } from "@/services/admin.service";
+import { ImportExcelModal } from "@/components/ui/import-excel-modal";
 import type {
   AdminClass,
   AdminHomeroomAssignment,
@@ -58,6 +59,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   BadgeCheck,
   BookOpen,
+  FileSpreadsheet,
   FilePenLine,
   GraduationCap,
   IdCard,
@@ -66,11 +68,13 @@ import {
   PencilLine,
   Plus,
   Search,
+  Printer,
   SlidersHorizontal,
   Sparkles,
   Trash2,
   UsersRound,
 } from "lucide-react";
+import { GuruReportModal } from "@/components/reports/guru-report-modal";
 import type { ReactNode } from "react";
 import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
@@ -110,6 +114,8 @@ export function TeacherSection({
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [activeTab, setActiveTab] = useState<TeacherTab>("profiles");
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
   const [subjectModalOpen, setSubjectModalOpen] = useState(false);
   const [homeroomModalOpen, setHomeroomModalOpen] = useState(false);
   const [editingProfile, setEditingProfile] = useState<AdminTeacherProfile | null>(null);
@@ -538,20 +544,32 @@ export function TeacherSection({
               </div>
             </div>
 
-            <div className="lg:w-[390px]">
-              <div className="flex items-center gap-3 rounded-[22px] border border-slate-200/75 bg-white/76 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
-                <span className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#effcf6_0%,#e0f7ee_100%)] text-emerald-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                  <LineChart className="size-4.5" />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800">
-                    Ringkasan kerja guru
-                  </p>
-                  <p className="text-xs leading-5 text-slate-500">
-                    Cari cepat profil, status aktif, mapel, atau kelas wali secara langsung.
-                  </p>
-                </div>
-              </div>
+            <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+              {activeTab === "profiles" && (
+                <Button
+                  variant="outline"
+                  className="h-14 rounded-[22px] border-teal-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(240,253,250,0.98)_100%)] px-5 text-sm font-semibold text-teal-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-teal-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(230,252,248,1)_100%)] hover:text-teal-950"
+                  onClick={() => setImportModalOpen(true)}
+                >
+                  <span className="flex size-8 items-center justify-center rounded-full bg-teal-600 text-white shadow-[0_10px_20px_rgba(13,148,136,0.2)]">
+                    <FileSpreadsheet className="size-4" />
+                  </span>
+                  Import Excel
+                </Button>
+              )}
+
+              {activeTab === "profiles" && (
+                <Button
+                  variant="outline"
+                  className="h-14 rounded-[22px] border-violet-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(245,243,255,0.98)_100%)] px-5 text-sm font-semibold text-violet-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-violet-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(237,233,254,1)_100%)] hover:text-violet-950"
+                  onClick={() => setReportModalOpen(true)}
+                >
+                  <span className="flex size-8 items-center justify-center rounded-full bg-violet-600 text-white shadow-[0_10px_20px_rgba(124,58,237,0.2)]">
+                    <Printer className="size-4" />
+                  </span>
+                  Cetak Laporan
+                </Button>
+              )}
             </div>
           </div>
 
@@ -887,6 +905,22 @@ export function TeacherSection({
           </TabsContent>
         </Tabs>
       </section>
+
+      <ImportExcelModal
+        open={importModalOpen}
+        onOpenChange={setImportModalOpen}
+        type="guru"
+        onSuccess={() => {
+          void queryClient.invalidateQueries({ queryKey: ["admin-teacher-profiles"] });
+          void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+        }}
+      />
+
+      <GuruReportModal
+        open={reportModalOpen}
+        onOpenChange={setReportModalOpen}
+        teachers={teacherProfiles}
+      />
 
       <TeacherProfileCreateModal
         open={profileModalOpen}

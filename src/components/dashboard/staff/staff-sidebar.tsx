@@ -43,15 +43,15 @@ export function StaffSidebar({
       <div
         aria-hidden={!isOpen}
         onClick={onClose}
-        className={`fixed inset-0 z-30 bg-slate-950/35 backdrop-blur-sm transition lg:hidden ${
+        className={`fixed inset-0 z-30 bg-slate-950/35 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           isOpen
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
         }`}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-[278px] rounded-r-[32px] bg-[linear-gradient(180deg,#1f7a65_0%,#176655_54%,#154f44_100%)] p-5 text-white shadow-[0_24px_64px_rgba(15,74,59,0.28)] lg:fixed lg:top-0 lg:left-0 lg:z-20 lg:flex lg:h-screen lg:w-[272px] lg:translate-x-0 lg:flex-col lg:rounded-r-[32px] lg:rounded-l-none lg:opacity-100 ${
-          isOpen ? "flex flex-col justify-between" : "hidden lg:flex"
+        className={`fixed inset-y-0 left-0 z-40 flex w-[278px] flex-col rounded-r-[32px] bg-[linear-gradient(180deg,#1f7a65_0%,#176655_54%,#154f44_100%)] p-5 text-white shadow-[0_24px_64px_rgba(15,74,59,0.28)] transition-transform duration-300 ease-in-out will-change-transform lg:w-[272px] lg:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex min-h-0 flex-1 flex-col">

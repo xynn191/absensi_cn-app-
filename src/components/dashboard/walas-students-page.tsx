@@ -26,6 +26,7 @@ import {
   FileClock,
   GraduationCap,
   LayoutPanelTop,
+  Printer,
   Search,
   ShieldCheck,
   SlidersHorizontal,
@@ -33,6 +34,7 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
+import { WalasSiswaReportModal } from "@/components/reports/walas-siswa-report-modal";
 import { useDeferredValue, useMemo, useState } from "react";
 
 const studentStatusOptions = [
@@ -57,6 +59,7 @@ export function WalasStudentsPage() {
   const deferredQuery = useDeferredValue(query);
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   const homeroomQuery = useQuery({
     queryKey: ["teacher-homeroom"],
@@ -214,6 +217,17 @@ export function WalasStudentsPage() {
                       triggerClassName="h-14 rounded-[22px] pl-4"
                     />
                   </div>
+
+                  <Button
+                    variant="outline"
+                    className="h-14 rounded-[22px] border-violet-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(245,243,255,0.98)_100%)] px-5 text-sm font-semibold text-violet-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-violet-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(237,233,254,1)_100%)] hover:text-violet-950"
+                    onClick={() => setReportModalOpen(true)}
+                  >
+                    <span className="flex size-8 items-center justify-center rounded-full bg-violet-600 text-white shadow-[0_10px_20px_rgba(124,58,237,0.2)]">
+                      <Printer className="size-4" />
+                    </span>
+                    Cetak Laporan
+                  </Button>
                 </div>
               </div>
             </div>
@@ -342,6 +356,12 @@ export function WalasStudentsPage() {
             studentDetail={studentDetailQuery.data ?? null}
             isLoading={studentDetailQuery.isLoading}
             errorMessage={studentDetailQuery.error?.message}
+          />
+
+          <WalasSiswaReportModal
+            open={reportModalOpen}
+            onOpenChange={setReportModalOpen}
+            homeroom={homeroom}
           />
         </>
       )}

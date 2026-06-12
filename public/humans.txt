@@ -1,0 +1,7 @@
+/* TEAM */
+Creator: Randhu Paksi Membumi
+Project: Absensi CN
+Site: Website absensi SMK Citra Negara
+
+/* COPYRIGHT */
+Copyright 2026 Randhu Paksi Membumi. All rights reserved.

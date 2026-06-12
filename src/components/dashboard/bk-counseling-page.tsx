@@ -38,12 +38,14 @@ import {
   FileText,
   LayoutPanelTop,
   Plus,
+  Printer,
   Search,
   ShieldAlert,
   SlidersHorizontal,
   Trash2,
   UsersRound,
 } from "lucide-react";
+import { BKKonselingReportModal } from "@/components/reports/bk-konseling-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -58,6 +60,7 @@ export function BKCounselingPage() {
   const [editTarget, setEditTarget] = useState<StaffCounselingNote | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<StaffCounselingNote | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query), 350);
@@ -198,6 +201,18 @@ export function BKCounselingPage() {
                     </p>
                   </div>
                 </div>
+                <div className="flex justify-start lg:justify-end">
+                  <Button
+                    variant="outline"
+                    className="h-14 rounded-[22px] border-violet-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(245,243,255,0.98)_100%)] px-5 text-sm font-semibold text-violet-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-violet-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(237,233,254,1)_100%)] hover:text-violet-950"
+                    onClick={() => setReportModalOpen(true)}
+                  >
+                    <span className="flex size-8 items-center justify-center rounded-full bg-violet-600 text-white shadow-[0_10px_20px_rgba(124,58,237,0.2)]">
+                      <Printer className="size-4" />
+                    </span>
+                    Cetak Laporan
+                  </Button>
+                </div>
               </div>
 
               <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
@@ -331,6 +346,13 @@ export function BKCounselingPage() {
               )}
             </motion.div>
           </section>
+
+          <BKKonselingReportModal
+            open={reportModalOpen}
+            onOpenChange={setReportModalOpen}
+            classes={classes}
+            students={students}
+          />
 
           <CounselingDetailModal
             note={detailTarget}

@@ -21,6 +21,7 @@ import type {
   AdminTeacherSubjectAssignmentPayload,
   AdminUser,
   AdminUserPayload,
+  ImportResult,
 } from "@/types/admin";
 import axios from "axios";
 
@@ -456,6 +457,56 @@ export async function updateAdminAttendanceRule(
 export async function deleteAdminAttendanceRule(id: string) {
   try {
     await apiClient.delete(`/admin/attendance-rules/${id}`);
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+}
+
+export function downloadAdminImportTemplate(type: "guru" | "siswa") {
+  apiClient
+    .get(`/admin/import/template/${type}`, { responseType: "blob" })
+    .then((response) => {
+      const filename =
+        type === "guru" ? "template_import_guru.xlsx" : "template_import_siswa.xlsx";
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    })
+    .catch((error) => {
+      throw new Error(getErrorMessage(error));
+    });
+}
+
+export async function importAdminTeachers(file: File): Promise<ImportResult> {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post<ApiEnvelope<ImportResult>>(
+      "/admin/import/guru",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    return response.data.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+}
+
+export async function importAdminStudents(file: File): Promise<ImportResult> {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post<ApiEnvelope<ImportResult>>(
+      "/admin/import/siswa",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    return response.data.data;
   } catch (error) {
     throw new Error(getErrorMessage(error));
   }

@@ -49,6 +49,9 @@
 }
 
 :root {
+  --app-author: "Randhu Paksi Membumi";
+  --app-credit: "Website absensi ini dibuat oleh Randhu Paksi Membumi";
+  --app-copyright: "Copyright 2026 Randhu Paksi Membumi. All rights reserved.";
   --background: oklch(0.985 0.01 235);
   --foreground: oklch(0.24 0.04 245);
   --card: oklch(1 0 0);

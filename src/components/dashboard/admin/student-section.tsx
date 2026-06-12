@@ -36,6 +36,7 @@ import {
   updateAdminStudent,
   updateAdminStudentClassMembership,
 } from "@/services/admin.service";
+import { ImportExcelModal } from "@/components/ui/import-excel-modal";
 import type {
   AdminAttendanceRule,
   AdminAttendanceRulePayload,
@@ -65,6 +66,7 @@ import {
   BookOpen,
   CalendarClock,
   FilePenLine,
+  FileSpreadsheet,
   GraduationCap,
   LayoutPanelTop,
   LineChart,
@@ -72,6 +74,7 @@ import {
   Plus,
   Search,
   ShieldCheck,
+  Printer,
   SlidersHorizontal,
   Sparkles,
   TimerReset,
@@ -79,6 +82,7 @@ import {
   UserPlus,
   UsersRound,
 } from "lucide-react";
+import { SiswaReportModal } from "@/components/reports/siswa-report-modal";
 import type { ReactNode } from "react";
 import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
@@ -133,6 +137,8 @@ export function StudentSection({
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [activeTab, setActiveTab] = useState<StudentTab>("profiles");
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
   const [membershipModalOpen, setMembershipModalOpen] = useState(false);
   const [ruleModalOpen, setRuleModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<AdminStudent | null>(null);
@@ -451,18 +457,32 @@ export function StudentSection({
               </div>
             </div>
 
-            <div className="lg:w-[390px]">
-              <div className="flex items-center gap-3 rounded-[22px] border border-slate-200/75 bg-white/76 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
-                <span className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#effcf6_0%,#e0f7ee_100%)] text-emerald-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                  <LineChart className="size-4.5" />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800">Ringkasan operasional siswa</p>
-                  <p className="text-xs leading-5 text-slate-500">
-                    Cari cepat siswa, rombel, dan aturan absensi tanpa pindah ke halaman lain.
-                  </p>
-                </div>
-              </div>
+            <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+              {activeTab === "profiles" && (
+                <Button
+                  variant="outline"
+                  className="h-14 rounded-[22px] border-teal-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(240,253,250,0.98)_100%)] px-5 text-sm font-semibold text-teal-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-teal-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(230,252,248,1)_100%)] hover:text-teal-950"
+                  onClick={() => setImportModalOpen(true)}
+                >
+                  <span className="flex size-8 items-center justify-center rounded-full bg-teal-600 text-white shadow-[0_10px_20px_rgba(13,148,136,0.2)]">
+                    <FileSpreadsheet className="size-4" />
+                  </span>
+                  Import Excel
+                </Button>
+              )}
+
+              {activeTab === "profiles" && (
+                <Button
+                  variant="outline"
+                  className="h-14 rounded-[22px] border-violet-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(245,243,255,0.98)_100%)] px-5 text-sm font-semibold text-violet-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-violet-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(237,233,254,1)_100%)] hover:text-violet-950"
+                  onClick={() => setReportModalOpen(true)}
+                >
+                  <span className="flex size-8 items-center justify-center rounded-full bg-violet-600 text-white shadow-[0_10px_20px_rgba(124,58,237,0.2)]">
+                    <Printer className="size-4" />
+                  </span>
+                  Cetak Laporan
+                </Button>
+              )}
             </div>
           </div>
 
@@ -700,6 +720,22 @@ export function StudentSection({
           </TabsContent>
         </Tabs>
       </section>
+
+      <ImportExcelModal
+        open={importModalOpen}
+        onOpenChange={setImportModalOpen}
+        type="siswa"
+        onSuccess={() => {
+          void queryClient.invalidateQueries({ queryKey: ["admin-students"] });
+          void queryClient.invalidateQueries({ queryKey: ["admin-student-class-memberships"] });
+        }}
+      />
+
+      <SiswaReportModal
+        open={reportModalOpen}
+        onOpenChange={setReportModalOpen}
+        students={students}
+      />
 
       <StudentProfileCreateModal
         open={profileModalOpen}
@@ -1605,9 +1641,10 @@ function BirthDatePicker({
   onChange: (value: string) => void;
 }) {
   const selectedDate = parseDateValue(value);
+  const [open, setOpen] = useState(false);
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         render={<Button type="button" variant="outline" />}
         className={`${inputClassName} w-full justify-start text-left font-normal ${value ? "text-slate-700" : "text-slate-400"}`}
@@ -1624,7 +1661,7 @@ function BirthDatePicker({
         <Calendar
           mode="single"
           selected={selectedDate}
-          onSelect={(date) => onChange(date ? toDateInputValue(date) : "")}
+          onSelect={(date) => { onChange(date ? toDateInputValue(date) : ""); setOpen(false); }}
           locale={localeID}
           buttonVariant="ghost"
           captionLayout="dropdown"

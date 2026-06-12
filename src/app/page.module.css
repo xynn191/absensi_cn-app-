@@ -12,14 +12,6 @@
   animation: landingOverlayWake 920ms ease-out both;
 }
 
-.landingAmbientOne {
-  animation: landingAmbientDrift 9s ease-in-out 850ms infinite;
-}
-
-.landingAmbientTwo {
-  animation: landingAmbientDrift 10s ease-in-out 1150ms infinite reverse;
-}
-
 .landingReveal,
 .landingRevealLeft,
 .landingRevealRight {
@@ -338,17 +330,6 @@
   }
 }
 
-@keyframes landingAmbientDrift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-
-  50% {
-    transform: translate3d(10px, -12px, 0) rotate(4deg);
-  }
-}
-
 @media (hover: none) {
   .landingHeroImage {
     animation: landingImageWakeMobile 700ms ease-out both;
@@ -379,8 +360,6 @@
 @media (prefers-reduced-motion: reduce) {
   .landingHeroImage,
   .landingOverlayReveal,
-  .landingAmbientOne,
-  .landingAmbientTwo,
   .landingReveal,
   .landingRevealLeft,
   .landingRevealRight,

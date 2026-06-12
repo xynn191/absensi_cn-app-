@@ -1,9 +1,10 @@
 "use client";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { appCredits } from "@/lib/config/credits";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Toaster } from "sonner";
 
 type AppProvidersProps = {
@@ -27,6 +28,26 @@ export function AppProviders({ children }: AppProvidersProps) {
         },
       }),
   );
+
+  useEffect(() => {
+    const watermarkKey = "__absensi_cn_credit_logged__";
+    if (window[watermarkKey as keyof Window]) return;
+    Object.defineProperty(window, watermarkKey, {
+      value: true,
+      configurable: false,
+      enumerable: false,
+      writable: false,
+    });
+
+    console.info(
+      `%c${appCredits.statement}`,
+      "color:#059669;font-size:14px;font-weight:800;",
+    );
+    console.info(
+      `%c${appCredits.copyright}`,
+      "color:#64748b;font-size:11px;font-weight:600;",
+    );
+  }, []);
 
   return (
     <ThemeProvider

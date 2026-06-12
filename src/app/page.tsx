@@ -249,9 +249,6 @@ export default async function HomePage() {
               />
               <div className={`${styles.landingHeroOverlay} ${styles.landingOverlayReveal} absolute inset-0`} />
               <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-emerald-950/70 via-emerald-950/18 to-transparent" />
-              <div className={`${styles.landingAmbientOne} absolute left-[7%] top-[10%] hidden h-36 w-36 rounded-full border border-white/15 bg-white/8 blur-[1px] md:block`} />
-              <div className={`${styles.landingAmbientTwo} absolute right-[8%] top-[14%] hidden h-24 w-24 rounded-[2rem] border border-emerald-200/20 bg-emerald-300/10 backdrop-blur-sm lg:block`} />
-
               <div className="relative z-10 mx-auto flex min-h-[620px] w-full max-w-[1480px] items-center px-6 py-16 md:min-h-[660px] md:px-10 xl:min-h-[720px] xl:px-14">
                 <div className="mx-auto max-w-[960px] space-y-6 text-center">
                   <div className={`${styles.landingReveal} inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-100 shadow-[0_16px_40px_rgba(0,0,0,0.18)] backdrop-blur-xl`}>
@@ -264,12 +261,12 @@ export default async function HomePage() {
                       SMK Citra Negara Attendance System
                     </p>
                     <h1 className={`${styles.landingReveal} ${styles.landingDelayTwo} font-heading text-[2.8rem] font-bold leading-[0.96] tracking-[-0.07em] text-white drop-shadow-[0_14px_30px_rgba(0,0,0,0.28)] md:text-[4.7rem] xl:text-[5.6rem]`}>
-                      Absen pagi cukup foto.
-                      <span className={`${styles.landingHeroTitle} block`}>Data langsung tervalidasi.</span>
+                      Absensi pagi tanpa antre.
+                      <span className={`${styles.landingHeroTitle} block`}>Cukup foto, data langsung masuk.</span>
                     </h1>
                     <p className={`${styles.landingReveal} ${styles.landingDelayThree} mx-auto max-w-[760px] text-base font-medium leading-8 text-white/82 md:text-[1.18rem]`}>
-                      Siswa melakukan absensi dengan kamera, wali kelas meninjau kehadiran,
-                      BK memantau prioritas, dan admin membaca semua data dari satu sistem.
+                      Siswa check-in dari kamera, wali kelas memvalidasi, BK memantau
+                      prioritas, dan admin melihat rekap secara real-time.
                     </p>
                   </div>
 
@@ -278,7 +275,7 @@ export default async function HomePage() {
                       href="/login"
                       className={`${styles.landingCtaButton} group inline-flex h-14 items-center justify-center gap-3 rounded-full px-6 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-emerald-50`}
                     >
-                      Login dan Mulai Absensi
+                      Mulai Absensi Sekarang
                       <FaArrowRight className="size-3.5 transition group-hover:translate-x-1" />
                     </Link>
                   </div>

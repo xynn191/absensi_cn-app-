@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/config/site";
+import { appCredits } from "@/lib/config/credits";
 import { AppProviders } from "@/providers/app-providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -15,11 +16,27 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  applicationName: siteConfig.name,
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  authors: [{ name: appCredits.creator }],
+  creator: appCredits.creator,
+  publisher: appCredits.creator,
+  generator: `${siteConfig.name} by ${appCredits.creator}`,
+  keywords: [
+    "Absensi CN",
+    "SMK Citra Negara",
+    "sistem absensi sekolah",
+    appCredits.creator,
+  ],
+  other: {
+    author: appCredits.creator,
+    copyright: appCredits.copyright,
+    "application-credit": appCredits.statement,
+  },
 };
 
 export default function RootLayout({

@@ -4,6 +4,14 @@ Frontend `Absensi CN`, sistem absensi sekolah untuk `SMK Citra Negara`.
 
 Project ini dibangun sebagai aplikasi `Next.js` yang fokus pada pengalaman pengguna, tampilan dashboard per role, form absensi, riwayat kehadiran, serta integrasi ke backend `Absensi CN API`.
 
+## Kepemilikan dan Kredit
+
+Website absensi ini dibuat oleh `Randhu Paksi Membumi`.
+
+Copyright 2026 `Randhu Paksi Membumi`. All rights reserved.
+
+Project ini dibuat untuk kebutuhan ujian praktik SMK dan portfolio. Penggunaan untuk operasional sekolah, distribusi ulang, rebranding, penghapusan atribusi pembuat, atau pengembangan turunan membutuhkan izin tertulis dari `Randhu Paksi Membumi`.
+
 ## Tentang Project
 
 `Absensi CN App` adalah sisi frontend dari arsitektur full stack `Absensi CN`.

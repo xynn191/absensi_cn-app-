@@ -50,12 +50,14 @@ import {
   ImageIcon,
   LayoutPanelTop,
   NotebookText,
+  Printer,
   Search,
   ShieldAlert,
   ShieldCheck,
   SlidersHorizontal,
   UsersRound,
 } from "lucide-react";
+import { WalasAbsensiReportModal } from "@/components/reports/walas-absensi-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -111,6 +113,7 @@ export function WalasAttendancePage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [reviewTarget, setReviewTarget] = useState<StaffAttendanceRecord | null>(null);
   const [proofTarget, setProofTarget] = useState<StaffAttendanceRecord | null>(null);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query), 350);
@@ -386,6 +389,17 @@ export function WalasAttendancePage() {
                       triggerClassName="h-14 rounded-[22px] pl-4"
                     />
                   </div>
+
+                  <Button
+                    variant="outline"
+                    className="h-14 rounded-[22px] border-violet-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(245,243,255,0.98)_100%)] px-5 text-sm font-semibold text-violet-800 shadow-[0_16px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.96)] hover:border-violet-300 hover:bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(237,233,254,1)_100%)] hover:text-violet-950"
+                    onClick={() => setReportModalOpen(true)}
+                  >
+                    <span className="flex size-8 items-center justify-center rounded-full bg-violet-600 text-white shadow-[0_10px_20px_rgba(124,58,237,0.2)]">
+                      <Printer className="size-4" />
+                    </span>
+                    Cetak Laporan
+                  </Button>
                 </div>
 
                 <div className="flex h-14 items-center gap-3 rounded-[24px] border border-slate-300/80 bg-white/84 px-4 shadow-[0_14px_28px_rgba(15,23,42,0.05),inset_0_1px_0_rgba(255,255,255,0.92)] transition-[border-color,box-shadow,background-color] duration-200 hover:border-emerald-400 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(236,253,245,0.98)_100%)] hover:shadow-[0_0_0_3px_rgba(16,185,129,0.16),0_16px_32px_rgba(15,23,42,0.07)]">
@@ -670,6 +684,11 @@ export function WalasAttendancePage() {
               if (!open) setProofTarget(null);
             }}
           />
+          <WalasAbsensiReportModal
+            open={reportModalOpen}
+            onOpenChange={setReportModalOpen}
+            homeroom={overview.homeroom}
+          />
         </>
       )}
     </StaffShell>
@@ -683,6 +702,7 @@ function CalendarFilterCard({
   selectedDate?: Date;
   onSelectDate: (date?: Date) => void;
 }) {
+  const [calOpen, setCalOpen] = useState(false);
   return (
     <div className="rounded-[24px] border border-emerald-100/75 bg-white/82 p-4 shadow-[0_14px_28px_rgba(15,23,42,0.05)]">
       <div className="flex items-start justify-between gap-3">
@@ -695,7 +715,7 @@ function CalendarFilterCard({
         <CalendarClock className="size-4.5 text-emerald-600" />
       </div>
 
-      <Popover>
+      <Popover open={calOpen} onOpenChange={setCalOpen}>
         <PopoverTrigger render={<Button type="button" variant="outline" />} className="mt-4 h-12 w-full justify-start rounded-[18px] border-slate-300/80 bg-[linear-gradient(180deg,#ffffff_0%,#f4fbf7_100%)] px-4 text-left text-slate-700 shadow-[0_10px_18px_rgba(15,23,42,0.04)] transition-[border-color,box-shadow,background-color] hover:border-emerald-400 hover:bg-emerald-50/70 hover:shadow-[0_0_0_3px_rgba(16,185,129,0.16),0_12px_24px_rgba(15,23,42,0.06)]">
           <div className="flex w-full items-center justify-between gap-3">
             <span className="text-sm font-medium">{selectedDate ? formatFriendlyDate(selectedDate) : "Pilih tanggal"}</span>
@@ -714,7 +734,7 @@ function CalendarFilterCard({
           <Calendar
             mode="single"
             selected={selectedDate}
-            onSelect={onSelectDate}
+            onSelect={(date) => { onSelectDate(date); setCalOpen(false); }}
             locale={localeID}
             buttonVariant="ghost"
           />
@@ -731,8 +751,9 @@ function AttendanceDateButton({
   selectedDate?: Date;
   onSelectDate: (date?: Date) => void;
 }) {
+  const [open, setOpen] = useState(false);
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         render={<Button type="button" variant="outline" />}
         className="h-14 rounded-[22px] border-slate-300/80 bg-white/84 px-4 text-left text-slate-700 shadow-[0_14px_28px_rgba(15,23,42,0.05),inset_0_1px_0_rgba(255,255,255,0.92)] transition-[border-color,box-shadow,background-color] duration-200 hover:border-emerald-400 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(236,253,245,0.98)_100%)] hover:shadow-[0_0_0_3px_rgba(16,185,129,0.16),0_16px_32px_rgba(15,23,42,0.07)]"
@@ -764,7 +785,7 @@ function AttendanceDateButton({
         <Calendar
           mode="single"
           selected={selectedDate}
-          onSelect={onSelectDate}
+          onSelect={(date) => { onSelectDate(date); setOpen(false); }}
           locale={localeID}
           buttonVariant="ghost"
         />

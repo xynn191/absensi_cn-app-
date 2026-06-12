@@ -249,3 +249,15 @@ export type AdminAttendanceRulePayload = {
   late_until: string;
   is_active: boolean;
 };
+
+export type ImportError = {
+  row: number;
+  field: string;
+  message: string;
+};
+
+export type ImportResult = {
+  imported: number;
+  skipped: number;
+  errors: ImportError[];
+};
