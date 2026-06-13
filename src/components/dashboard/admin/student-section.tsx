@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
 import { ScrollableTabsWrapper } from "@/components/dashboard/admin/scrollable-tabs";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,6 @@ import {
   updateAdminStudent,
   updateAdminStudentClassMembership,
 } from "@/services/admin.service";
-import { ImportExcelModal } from "@/components/ui/import-excel-modal";
 import type {
   AdminAttendanceRule,
   AdminAttendanceRulePayload,
@@ -82,11 +82,20 @@ import {
   UserPlus,
   UsersRound,
 } from "lucide-react";
-import { SiswaReportModal } from "@/components/reports/siswa-report-modal";
 import type { ReactNode } from "react";
 import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
+
+const ImportExcelModal = dynamic(
+  () => import("@/components/ui/import-excel-modal").then((module) => module.ImportExcelModal),
+  { ssr: false },
+);
+
+const SiswaReportModal = dynamic(
+  () => import("@/components/reports/siswa-report-modal").then((module) => module.SiswaReportModal),
+  { ssr: false },
+);
 
 type StudentSectionProps = {
   students: AdminStudent[];

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { PremiumModal, premiumModalActionsClassName } from "@/components/ui/premium-modal";
 import { Button } from "@/components/ui/button";
+import { applyPdfCreditMetadata } from "@/lib/reports/pdf-metadata";
 import { cn } from "@/lib/utils";
 import { QuestionBlock, ReportCheckbox, ReportRadio } from "@/components/reports/guru-report-modal";
 import { getTeacherHomeroomSubmissionsOverview } from "@/services/staff.service";
@@ -42,6 +43,7 @@ async function generateWalasPengajuanPdf(
   const { default: autoTable } = await import("jspdf-autotable");
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  applyPdfCreditMetadata(doc, "Laporan Walas Pengajuan");
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   const mx = 14;

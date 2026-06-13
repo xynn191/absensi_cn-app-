@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   AttendanceStatusPill,
   classFilterOptions,
@@ -47,10 +48,14 @@ import {
   SlidersHorizontal,
   TriangleAlert,
 } from "lucide-react";
-import { BKAbsensiReportModal } from "@/components/reports/bk-absensi-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+const BKAbsensiReportModal = dynamic(
+  () => import("@/components/reports/bk-absensi-report-modal").then((module) => module.BKAbsensiReportModal),
+  { ssr: false },
+);
 
 const statusOptions = [
   { value: "Semua", label: "Semua status" },

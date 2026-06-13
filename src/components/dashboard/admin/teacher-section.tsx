@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
 import { ScrollableTabsWrapper } from "@/components/dashboard/admin/scrollable-tabs";
 import { Badge } from "@/components/ui/badge";
@@ -34,7 +35,6 @@ import {
   updateAdminTeacherSubjectAssignment,
   updateAdminUser,
 } from "@/services/admin.service";
-import { ImportExcelModal } from "@/components/ui/import-excel-modal";
 import type {
   AdminClass,
   AdminHomeroomAssignment,
@@ -74,11 +74,20 @@ import {
   Trash2,
   UsersRound,
 } from "lucide-react";
-import { GuruReportModal } from "@/components/reports/guru-report-modal";
 import type { ReactNode } from "react";
 import { useEffect, useDeferredValue, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
+
+const ImportExcelModal = dynamic(
+  () => import("@/components/ui/import-excel-modal").then((module) => module.ImportExcelModal),
+  { ssr: false },
+);
+
+const GuruReportModal = dynamic(
+  () => import("@/components/reports/guru-report-modal").then((module) => module.GuruReportModal),
+  { ssr: false },
+);
 
 type TeacherSectionProps = {
   teacherProfiles: AdminTeacherProfile[];

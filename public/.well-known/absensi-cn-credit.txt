@@ -1,5 +1,5 @@
 Project: Absensi CN
-Creator: Randhu Paksi Membumi
-Copyright: Copyright 2026 Randhu Paksi Membumi. All rights reserved.
-Statement: Website absensi ini dibuat oleh Randhu Paksi Membumi untuk kebutuhan ujian praktik SMK.
-
+Team: RBAR Team
+Lead Creator: Randhu Paksi Membumi - Creator, Lead Fullstack Developer, System Analyst, UI/UX Designer, Frontend Engineer, Backend Engineer
+Contributors: Ilham Rae Utomo - Backend Developer, Hosting & Deployment Engineer; Abiansyah Putra - Backend Developer, Hosting & Deployment Engineer; Fabian Nanday Ghanian - UI/UX Designer
+Copyright: Copyright 2026 RBAR Team. All rights reserved.

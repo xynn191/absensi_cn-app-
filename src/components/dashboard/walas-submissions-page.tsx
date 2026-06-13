@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
 import { KpiCard } from "@/components/dashboard/admin/kpi-card";
 import { StaffShell } from "@/components/dashboard/staff/staff-shell";
@@ -45,10 +46,14 @@ import {
   Upload,
   XCircle,
 } from "lucide-react";
-import { WalasPengajuanReportModal } from "@/components/reports/walas-pengajuan-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+
+const WalasPengajuanReportModal = dynamic(
+  () => import("@/components/reports/walas-pengajuan-report-modal").then((module) => module.WalasPengajuanReportModal),
+  { ssr: false },
+);
 
 const submissionStatusOptions = [
   { value: "Semua", label: "Semua" },

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   classFilterOptions,
   formatDateTime,
@@ -47,10 +48,14 @@ import {
   SlidersHorizontal,
   Upload,
 } from "lucide-react";
-import { BKPengajuanReportModal } from "@/components/reports/bk-pengajuan-report-modal";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+
+const BKPengajuanReportModal = dynamic(
+  () => import("@/components/reports/bk-pengajuan-report-modal").then((module) => module.BKPengajuanReportModal),
+  { ssr: false },
+);
 
 const submissionStatusOptions = [
   { value: "Semua", label: "Semua status" },

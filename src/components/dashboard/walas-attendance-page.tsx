@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { AttendanceDonutChart } from "@/components/dashboard/admin/attendance-donut-chart";
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
 import { KpiCard } from "@/components/dashboard/admin/kpi-card";
@@ -57,11 +58,15 @@ import {
   SlidersHorizontal,
   UsersRound,
 } from "lucide-react";
-import { WalasAbsensiReportModal } from "@/components/reports/walas-absensi-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatDisplayLabel } from "@/lib/utils";
+
+const WalasAbsensiReportModal = dynamic(
+  () => import("@/components/reports/walas-absensi-report-modal").then((module) => module.WalasAbsensiReportModal),
+  { ssr: false },
+);
 
 const statusOptions = [
   { value: "Semua", label: "Semua status" },

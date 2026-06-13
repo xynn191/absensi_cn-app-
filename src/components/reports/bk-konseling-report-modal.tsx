@@ -5,6 +5,7 @@ import {
   PremiumModal,
   premiumModalActionsClassName,
 } from "@/components/ui/premium-modal";
+import { applyPdfCreditMetadata } from "@/lib/reports/pdf-metadata";
 import { cn } from "@/lib/utils";
 import {
   QuestionBlock,
@@ -71,6 +72,7 @@ async function generateBKKonselingPdf(
   const { default: autoTable } = await import("jspdf-autotable");
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  applyPdfCreditMetadata(doc, "Laporan Konseling BK");
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   const mx = 14;

@@ -1,7 +1,7 @@
 "use client";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { appCredits } from "@/lib/config/credits";
+import { appCreditLongStatement, appCreditSummary, appCredits } from "@/lib/config/credits";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { ReactNode, useEffect, useState } from "react";
@@ -38,10 +38,28 @@ export function AppProviders({ children }: AppProvidersProps) {
       enumerable: false,
       writable: false,
     });
+    Object.defineProperty(window, "__ABSENSI_CN_CREDIT__", {
+      value: {
+        project: appCredits.project,
+        team: appCredits.team,
+        leadCreator: appCredits.leadCreator,
+        leadCreatorRole: appCredits.leadCreatorFullRole,
+        contributors: appCredits.contributors,
+        copyright: appCredits.copyright,
+        statement: appCreditLongStatement,
+      },
+      configurable: false,
+      enumerable: false,
+      writable: false,
+    });
 
     console.info(
-      `%c${appCredits.statement}`,
+      `%c${appCredits.project} by ${appCredits.team}`,
       "color:#059669;font-size:14px;font-weight:800;",
+    );
+    console.info(
+      `%cLead: ${appCreditSummary}. ${appCreditLongStatement}`,
+      "color:#64748b;font-size:11px;font-weight:600;",
     );
     console.info(
       `%c${appCredits.copyright}`,

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { EmptyState } from "@/components/dashboard/admin/empty-state";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,8 +35,12 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
-import { WalasSiswaReportModal } from "@/components/reports/walas-siswa-report-modal";
 import { useDeferredValue, useMemo, useState } from "react";
+
+const WalasSiswaReportModal = dynamic(
+  () => import("@/components/reports/walas-siswa-report-modal").then((module) => module.WalasSiswaReportModal),
+  { ssr: false },
+);
 
 const studentStatusOptions = [
   { value: "Semua", label: "Semua" },

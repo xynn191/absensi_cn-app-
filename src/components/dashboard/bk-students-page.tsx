@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   AttendanceStatusPill,
   classFilterOptions,
@@ -48,10 +49,14 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
-import { BKSiswaReportModal } from "@/components/reports/bk-siswa-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+
+const BKSiswaReportModal = dynamic(
+  () => import("@/components/reports/bk-siswa-report-modal").then((module) => module.BKSiswaReportModal),
+  { ssr: false },
+);
 
 const riskOptions = [
   { value: "Semua", label: "Semua risiko" },

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   classFilterOptions,
   formatDateTime,
@@ -45,10 +46,14 @@ import {
   Trash2,
   UsersRound,
 } from "lucide-react";
-import { BKKonselingReportModal } from "@/components/reports/bk-konseling-report-modal";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+
+const BKKonselingReportModal = dynamic(
+  () => import("@/components/reports/bk-konseling-report-modal").then((module) => module.BKKonselingReportModal),
+  { ssr: false },
+);
 
 export function BKCounselingPage() {
   const queryClient = useQueryClient();

@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { applyPdfCreditMetadata } from "@/lib/reports/pdf-metadata";
 import { cn } from "@/lib/utils";
 import {
   QuestionBlock,
@@ -141,6 +142,7 @@ async function generateBKAbsensiPdf(
   const { default: autoTable } = await import("jspdf-autotable");
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  applyPdfCreditMetadata(doc, "Laporan Absensi BK");
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   const mx = 14;

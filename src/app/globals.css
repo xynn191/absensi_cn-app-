@@ -49,9 +49,10 @@
 }
 
 :root {
-  --app-author: "Randhu Paksi Membumi";
-  --app-credit: "Website absensi ini dibuat oleh Randhu Paksi Membumi";
-  --app-copyright: "Copyright 2026 Randhu Paksi Membumi. All rights reserved.";
+  --app-team: "RBAR Team";
+  --app-author: "Randhu Paksi Membumi - Creator & Lead Fullstack Developer";
+  --app-credit: "Absensi CN dibuat oleh RBAR Team dan dipimpin oleh Randhu Paksi Membumi";
+  --app-copyright: "Copyright 2026 RBAR Team. All rights reserved.";
   --background: oklch(0.985 0.01 235);
   --foreground: oklch(0.24 0.04 245);
   --card: oklch(1 0 0);

@@ -5,6 +5,7 @@ import { PremiumModal, premiumModalActionsClassName } from "@/components/ui/prem
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import { applyPdfCreditMetadata } from "@/lib/reports/pdf-metadata";
 import { cn } from "@/lib/utils";
 import { QuestionBlock, ReportCheckbox, ReportRadio } from "@/components/reports/guru-report-modal";
 import { getTeacherHomeroomAttendanceOverview } from "@/services/staff.service";
@@ -66,6 +67,7 @@ async function generateWalasAbsensiPdf(
   const { default: autoTable } = await import("jspdf-autotable");
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  applyPdfCreditMetadata(doc, "Laporan Walas Absensi");
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   const mx = 14;
